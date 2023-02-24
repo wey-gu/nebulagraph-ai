@@ -1,0 +1,17 @@
+[tool.pdm]
+
+[project]
+name = "ngdi"
+version = "0.1.0"
+description = "NebulaGraph Data Intelligence Suite"
+authors = [
+    {name = "Wey Gu", email = "weyl.gu@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.6"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+
+[build-system]
+requires = ["pdm-pep517>=1.0"]
+build-backend = "pdm.pep517.api"

@@ -1,14 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 The NebulaGraph Authors. All rights reserved.
-
-
 from __future__ import annotations
 
 from ngdi.config import NebulaGraphConfig
 from ngdi.nebula_data import NebulaDataFrameObject
 
 
-class NebulaReaderBase:
+class NebulaReaderBase(object):
     def __init__(self, engine=None, config=None : NebulaGraphConfig, **kwargs):
         self.engine_type = engine
         self.config = config

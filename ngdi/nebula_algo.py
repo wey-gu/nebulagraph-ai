@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from ngdi.nebula_data import NebulaGraphObject, NebulaDataFrameObject
 
+
 class NebulaAlgorithm:
     def __init__(self, obj: NebulaGraphObject or NebulaDataFrameObject):
         if isinstance(obj, NebulaGraphObject):
@@ -28,6 +29,7 @@ class NebulaDataFrameAlgorithm:
     """
     Spark Dataframe to run algorithm
     """
+
     def __init__(self, ndf_obj: NebulaDataFrameObject):
         self.ndf_obj = ndf_obj
 
@@ -58,25 +60,23 @@ class NebulaDataFrameAlgorithm:
 
     def pagerank(self, reset_prob=0.85, max_iter=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "PRConfig", "PageRankAlgo")
+            "PRConfig", "PageRankAlgo"
+        )
         df = self.ndf_obj.data
         # double check df is a spark dataframe
         if not isinstance(df, spark.DataFrame):
             raise Exception("The NebulaDataFrameObject is not a spark dataframe")
 
         config = spark._jvm.PRConfig(max_iter, reset_prob, encode_vertex_id)
-        result = spark._jvm.PageRankAlgo.apply(
-            jspark,
-            df._jdf,
-            config,
-            False)
+        result = spark._jvm.PageRankAlgo.apply(jspark, df._jdf, config, False)
         # TBD: False means not to use the default partitioner,
         # we could make it configurable in the future
         return result
-    
+
     def connected_components(self, max_iter=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "CCConfig", "ConnectedComponentsAlgo")
+            "CCConfig", "ConnectedComponentsAlgo"
+        )
         df = self.ndf_obj.data
         # double check df is a spark dataframe
         if not isinstance(df, spark.DataFrame):
@@ -84,72 +84,54 @@ class NebulaDataFrameAlgorithm:
 
         config = spark._jvm.CCConfig(max_iter, encode_vertex_id)
         result = spark._jvm.ConnectedComponentsAlgo.apply(
-            jspark,
-            df._jdf,
-            config,
-            False)
+            jspark, df._jdf, config, False
+        )
         # TBD: False means not to use the default partitioner,
         # we could make it configurable in the future
         return result
 
     def label_propagation(self, max_iter=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "LPAConfig", "LabelPropagationAlgo")
+            "LPAConfig", "LabelPropagationAlgo"
+        )
         df = self.ndf_obj.data
         # double check df is a spark dataframe
         if not isinstance(df, spark.DataFrame):
             raise Exception("The NebulaDataFrameObject is not a spark dataframe")
 
         config = spark._jvm.LPAConfig(max_iter, encode_vertex_id)
-        result = spark._jvm.LabelPropagationAlgo.apply(
-            jspark,
-            df._jdf,
-            config,
-            False)
+        result = spark._jvm.LabelPropagationAlgo.apply(jspark, df._jdf, config, False)
         # TBD: False means not to use the default partitioner,
         # we could make it configurable in the future
         return result
 
     def louvain(self, max_iter=3, internalIter=10, tol=0.0001):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "LouvainConfig", "LouvainAlgo")
+            "LouvainConfig", "LouvainAlgo"
+        )
         df = self.ndf_obj.data
         # double check df is a spark dataframe
         if not isinstance(df, spark.DataFrame):
             raise Exception("The NebulaDataFrameObject is not a spark dataframe")
 
-        config = spark._jvm.LouvainConfig(
-            max_iter,
-            internalIter,
-            tol,
-            encode_vertex_id)
-        result = spark._jvm.LouvainAlgo.apply(
-            jspark,
-            df._jdf,
-            config,
-            False)
+        config = spark._jvm.LouvainConfig(max_iter, internalIter, tol, encode_vertex_id)
+        result = spark._jvm.LouvainAlgo.apply(jspark, df._jdf, config, False)
         # TBD: False means not to use the default partitioner,
         # we could make it configurable in the future
         return result
 
     def k_core(self, max_iter=3, degree=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "KCoreConfig", "KCoreAlgo")
+            "KCoreConfig", "KCoreAlgo"
+        )
         df = self.ndf_obj.data
         # double check df is a spark dataframe
         if not isinstance(df, spark.DataFrame):
             raise Exception("The NebulaDataFrameObject is not a spark dataframe")
 
-        config = spark._jvm.KCoreConfig(
-            max_iter,
-            degree,
-            encode_vertex_id)
+        config = spark._jvm.KCoreConfig(max_iter, degree, encode_vertex_id)
 
-        result = spark._jvm.KCoreAlgo.apply(
-            jspark,
-            df._jdf,
-            config,
-            False)
+        result = spark._jvm.KCoreAlgo.apply(jspark, df._jdf, config, False)
         # TBD: False means not to use the default partitioner,
         # we could make it configurable in the future
         return result
@@ -159,6 +141,7 @@ class NebulaGraphAlgorithm:
     """
     Networkx to run algorithm
     """
+
     def __init__(self, graph):
         self.graph = graph
 

@@ -20,13 +20,13 @@ class NebulaGraphObject:
 
     def get_engine(self):
         return self.engine
-    
+
     @property
     def algo(self):
         return NebulaAlgorithm(self)
 
     def get_nx_graph(self):
-        if self.engine.type == 'nebula':
+        if self.engine.type == "nebula":
             if self._graph is None:
                 # convert the graph to a networkx graph
                 # and return the result
@@ -38,9 +38,9 @@ class NebulaGraphObject:
                 "For NebulaGraphObject in spark engine,"
                 "convert to networkx graph is not supported",
             )
-    
+
     def to_networkx(self, update=False):
-        if self.engine.type == 'nebula':
+        if self.engine.type == "nebula":
             # convert the graph to a networkx graph
             # and return the result
             if self._graph is None or update:
@@ -52,9 +52,9 @@ class NebulaGraphObject:
                 "For NebulaGraphObject in spark engine,"
                 "convert to networkx graph is not supported",
             )
-    
+
     def to_graphx(self, update=False):
-        if self.engine.type == 'spark':
+        if self.engine.type == "spark":
             # convert the graph to a graphx graph
             # and return the result
             if self._graph is None or update:
@@ -83,7 +83,7 @@ class NebulaDataFrameObject:
         return NebulaAlgorithm(self)
 
     def to_spark_df(self):
-        if self.engine.type == 'spark':
+        if self.engine.type == "spark":
             return self.data
         else:
             # convert pandas dataframe to spark dataframe
@@ -91,7 +91,7 @@ class NebulaDataFrameObject:
             raise NotImplementedError
 
     def to_pandas_df(self):
-        if self.engine.type == 'nebula':
+        if self.engine.type == "nebula":
             return self.data
         else:
             # convert the spark df to a pandas data frame
@@ -100,8 +100,8 @@ class NebulaDataFrameObject:
             raise NotImplementedError
 
     def to_networkx(self):
-        if self.engine.type == 'nebula':
-            return nx.from_pandas_edgelist(self.data, 'src', 'dst')
+        if self.engine.type == "nebula":
+            return nx.from_pandas_edgelist(self.data, "src", "dst")
         else:
             # for now the else case will be spark, to networkx is not supported
             raise Exception(
@@ -110,7 +110,7 @@ class NebulaDataFrameObject:
             )
 
     def to_graphx(self):
-        if self.engine.type == 'spark':
+        if self.engine.type == "spark":
             df = self.data
             # convert the df to a graphx graph, not implemented now
             raise NotImplementedError
@@ -120,7 +120,7 @@ class NebulaDataFrameObject:
                 "For NebulaDataFrameObject in nebula engine,"
                 "convert to graphx is not supported",
             )
-    
+
     def to_graph(self):
         return NebulaGraphObject(self)
 

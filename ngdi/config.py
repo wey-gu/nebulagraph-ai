@@ -1,8 +1,5 @@
-# NebulaGraphConfig is a class that contains the configuration of NebulaGraph. with default values.
-# The default values are GRAPHD_HOSTS, METAD_HOSTS, USER, PASSWORD
-
-# Path: ngdi/config.py
 # SPDX-License-Identifier: Apache-2.0
+# Copyright 2023 The NebulaGraph Authors. All rights reserved.
 
 from __future__ import annotations
 
@@ -14,7 +11,7 @@ PASSWORD = "nebula"
 SPACE = "basketballplayer"
 
 
-class NebulaGraphConfig():
+class NebulaGraphConfig:
     def __init__(
         self,
         graphd_hosts: str = GRAPHD_HOSTS,

@@ -33,7 +33,9 @@ The NebulaDataFrameObject returned by ngdi.NebulaReader.read() is a Pandas DataF
 
 #### Examples
 
-- Spark Engine Examples
+##### Spark Engine Examples
+
+See also: [examples/spark_engine.ipynb](examples/spark_engine.ipynb)
 
 ```python
 from ngdi import NebulaReader
@@ -54,7 +56,7 @@ reader.scan(edge="follow", props="degree")
 df = reader.read() # this will take some time
 df.show(10)
 
-# read data with spark engine, load mode
+# read data with spark engine, load mode (not yet implemented)
 reader = NebulaReader(engine="spark")
 reader.load(source="hdfs://path/to/edge.csv", format="csv", header=True, schema="src: string, dst: string, rank: int")
 df = reader.read() # this will take some time
@@ -67,7 +69,7 @@ pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some
 graph = reader.to_graphx() # not yet implemented
 ```
 
-- NebulaGraph Engine Examples(not yet implemented)
+##### NebulaGraph Engine Examples(not yet implemented)
 
 ```python
 from ngdi import NebulaReader

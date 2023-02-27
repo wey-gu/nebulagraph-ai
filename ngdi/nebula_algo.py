@@ -3,14 +3,15 @@
 
 from __future__ import annotations
 
-from ngdi.nebula_data import NebulaGraphObject, NebulaDataFrameObject
+from ngdi.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
+from ngdi.nebula_data import NebulaDataFrameObject as NebulaDataFrameObjectImpl
 
 
 class NebulaAlgorithm:
-    def __init__(self, obj: NebulaGraphObject or NebulaDataFrameObject):
-        if isinstance(obj, NebulaGraphObject):
+    def __init__(self, obj: NebulaGraphObjectImpl or NebulaDataFrameObjectImpl):
+        if isinstance(obj, NebulaGraphObjectImpl):
             self.algorithm = NebulaGraphAlgorithm(obj)
-        elif isinstance(obj, NebulaDataFrameObject):
+        elif isinstance(obj, NebulaDataFrameObjectImpl):
             self.algorithm = NebulaDataFrameAlgorithm(obj)
         else:
             raise ValueError(
@@ -30,7 +31,7 @@ class NebulaDataFrameAlgorithm:
     Spark Dataframe to run algorithm
     """
 
-    def __init__(self, ndf_obj: NebulaDataFrameObject):
+    def __init__(self, ndf_obj: NebulaDataFrameObjectImpl):
         self.ndf_obj = ndf_obj
 
     def check_engine(self):
@@ -58,15 +59,24 @@ class NebulaDataFrameAlgorithm:
         engine.import_algo_lib_class(lib_class)
         return engine, spark, jspark, engine.encode_vertex_id
 
+    def get_spark_dataframe(self):
+        """
+        Check if df is a pyspark.sql.dataframe.DataFrameme, and return it
+        """
+        df = self.ndf_obj.data
+        from pyspark.sql.dataframe import DataFrame as pyspark_sql_df
+        if not isinstance(df, pyspark_sql_df):
+            raise Exception(
+                "The NebulaDataFrameObject is not a spark dataframe",
+                f"Got type(df): {type(df)}",
+            )
+        return df
+
     def pagerank(self, reset_prob=0.85, max_iter=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "PRConfig", "PageRankAlgo"
         )
-        df = self.ndf_obj.data
-        # double check df is a spark dataframe
-        if not isinstance(df, spark.DataFrame):
-            raise Exception("The NebulaDataFrameObject is not a spark dataframe")
-
+        df = self.get_spark_dataframe()
         config = spark._jvm.PRConfig(max_iter, reset_prob, encode_vertex_id)
         result = spark._jvm.PageRankAlgo.apply(jspark, df._jdf, config, False)
         # TBD: False means not to use the default partitioner,
@@ -75,14 +85,10 @@ class NebulaDataFrameAlgorithm:
 
     def connected_components(self, max_iter=3):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "CCConfig", "ConnectedComponentsAlgo"
+            "CcConfig", "ConnectedComponentsAlgo"
         )
-        df = self.ndf_obj.data
-        # double check df is a spark dataframe
-        if not isinstance(df, spark.DataFrame):
-            raise Exception("The NebulaDataFrameObject is not a spark dataframe")
-
-        config = spark._jvm.CCConfig(max_iter, encode_vertex_id)
+        df = self.get_spark_dataframe()
+        config = spark._jvm.CcConfig(max_iter, encode_vertex_id)
         result = spark._jvm.ConnectedComponentsAlgo.apply(
             jspark, df._jdf, config, False
         )
@@ -94,10 +100,7 @@ class NebulaDataFrameAlgorithm:
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LPAConfig", "LabelPropagationAlgo"
         )
-        df = self.ndf_obj.data
-        # double check df is a spark dataframe
-        if not isinstance(df, spark.DataFrame):
-            raise Exception("The NebulaDataFrameObject is not a spark dataframe")
+        df = self.get_spark_dataframe()
 
         config = spark._jvm.LPAConfig(max_iter, encode_vertex_id)
         result = spark._jvm.LabelPropagationAlgo.apply(jspark, df._jdf, config, False)
@@ -109,10 +112,7 @@ class NebulaDataFrameAlgorithm:
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LouvainConfig", "LouvainAlgo"
         )
-        df = self.ndf_obj.data
-        # double check df is a spark dataframe
-        if not isinstance(df, spark.DataFrame):
-            raise Exception("The NebulaDataFrameObject is not a spark dataframe")
+        df = self.get_spark_dataframe()
 
         config = spark._jvm.LouvainConfig(max_iter, internalIter, tol, encode_vertex_id)
         result = spark._jvm.LouvainAlgo.apply(jspark, df._jdf, config, False)
@@ -124,10 +124,7 @@ class NebulaDataFrameAlgorithm:
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "KCoreConfig", "KCoreAlgo"
         )
-        df = self.ndf_obj.data
-        # double check df is a spark dataframe
-        if not isinstance(df, spark.DataFrame):
-            raise Exception("The NebulaDataFrameObject is not a spark dataframe")
+        df = self.get_spark_dataframe()
 
         config = spark._jvm.KCoreConfig(max_iter, degree, encode_vertex_id)
 

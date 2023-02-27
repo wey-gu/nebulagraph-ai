@@ -29,6 +29,7 @@ class NebulaReaderBase(object):
 
 class NebulaReader:
     def __init__(self, engine="spark", config=NebulaGraphConfig(), **kwargs):
+        self.engine_type = engine
         if self.engine_type == "spark":
             self.reader = NebulaReaderWithSpark(config, **kwargs)
         elif self.engine_type == "nebula":
@@ -38,9 +39,6 @@ class NebulaReader:
 
     def __getattr__(self, name):
         return getattr(self.reader, name)
-
-    def scan(self, **kwargs):
-        raise NotImplementedError
 
 
 class NebulaReaderWithGraph(NebulaReaderBase):
@@ -80,6 +78,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
 
         self.engine = SparkEngine(config)
         self.raw_df = None
+        self.raw_df_reader = None
         self.df = None
 
     def scan(self, **kwargs):
@@ -117,7 +116,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
         spark = self.engine.spark
         datasource_format = self.engine.nebula_spark_ds
 
-        self.raw_df = (
+        self.raw_df_reader = (
             spark.read.format(datasource_format)
             .option("type", "edge")
             .option("spaceName", space_name)
@@ -168,7 +167,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
         spark = self.engine.spark
         datasource_format = self.engine.nebula_spark_ds
 
-        self.raw_df = (
+        self.raw_df_reader = (
             spark.read.format(datasource_format)
             .option("type", "edge")
             .option("spaceName", space_name)
@@ -186,9 +185,9 @@ class NebulaReaderWithSpark(NebulaReaderBase):
 
     def read(self, **kwargs):
         # Check self.raw_df, if it is None, raise exception
-        if self.raw_df is None:
+        if self.raw_df_reader is None:
             raise Exception("No data loaded, please use scan or query first")
-        self.raw_df.load()
+        self.raw_df = self.raw_df_reader.load()
         self.df = NebulaDataFrameObject(engine=self.engine, data=self.raw_df)
         return self.df
 

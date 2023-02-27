@@ -26,10 +26,9 @@ class NebulaGraphConfig:
         self.user = user
         self.password = password
         self.space = space
-        self.kwargs = kwargs
-        self.config.shuffle_partitions = None
-        self.config.executor_memory = None
-        self.config.driver_memory = None
+        self.shuffle_partitions = None
+        self.executor_memory = None
+        self.driver_memory = None
         for key, value in kwargs.items():
             setattr(self, key, value)
 

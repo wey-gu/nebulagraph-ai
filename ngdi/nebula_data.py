@@ -3,11 +3,7 @@
 
 from __future__ import annotations
 
-from ngdi.nebula_algo import NebulaAlgorithm
-
-import pandas as pd
 import networkx as nx
-import spark
 
 
 class NebulaGraphObject:
@@ -23,7 +19,8 @@ class NebulaGraphObject:
 
     @property
     def algo(self):
-        return NebulaAlgorithm(self)
+        from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        return NebulaAlgorithmImpl(self)
 
     def get_nx_graph(self):
         if self.engine.type == "nebula":
@@ -69,7 +66,10 @@ class NebulaGraphObject:
 
 
 class NebulaDataFrameObject:
-    def __init__(self, engine, data: pd.DataFrame or spark.DataFrame):
+    def __init__(self, engine, data):
+        """
+        data: pd.DataFrame or spark.DataFrame
+        """
         self.engine = engine
         self.data = data
         # if engine is nebula, self.data is a pandas dataframe
@@ -80,7 +80,8 @@ class NebulaDataFrameObject:
 
     @property
     def algo(self):
-        return NebulaAlgorithm(self)
+        from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        return NebulaAlgorithmImpl(self)
 
     def to_spark_df(self):
         if self.engine.type == "spark":
@@ -124,6 +125,5 @@ class NebulaDataFrameObject:
     def to_graph(self):
         return NebulaGraphObject(self)
 
-    @staticmethod
-    def show(**kwargs):
-        return self.data.show(**kwargs)
+    def show(self, *keywords, **kwargs):
+        return self.data.show(*keywords, **kwargs)

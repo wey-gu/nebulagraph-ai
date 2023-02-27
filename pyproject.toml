@@ -2,7 +2,7 @@
 
 [project]
 name = "ngdi"
-version = "0.1.1"
+version = "0.1.4"
 description = "NebulaGraph Data Intelligence Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},

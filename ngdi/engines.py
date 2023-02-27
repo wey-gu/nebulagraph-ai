@@ -23,7 +23,7 @@ ENCODE_VERTEX_ID = True
 
 
 class BaseEngine(object):
-    def __init__(self, config=None):
+    def __init__(self, config):
         pass
 
     def __str__(self):
@@ -34,7 +34,7 @@ class BaseEngine(object):
 
 
 class SparkEngine(BaseEngine):
-    def __init__(self, config=None):
+    def __init__(self, config):
         self.type = "spark"
         self.config = config
         self.shuffle_partitions = DEFAULT_SHUFFLE_PARTITIONS

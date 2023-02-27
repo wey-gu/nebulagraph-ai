@@ -60,19 +60,14 @@ reader.load(source="hdfs://path/to/edge.csv", format="csv", header=True, schema=
 df = reader.read() # this will take some time
 df.show(10)
 
-# run connected components algorithm
-cc_result = df.algo.connected_components() # this will take some time
+# run pagerank algorithm
+pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some time
 
 # convert dataframe to NebulaGraphObject
-graph = reader.to_graph() # this will take some time
-graph.vertices.show(10)
-graph.edges.show(10)
-
-# run pagerank algorithm
-pr_result = graph.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some time
+graph = reader.to_graphx() # not yet implemented
 ```
 
-- NebulaGraph Engine Examples
+- NebulaGraph Engine Examples(not yet implemented)
 
 ```python
 from ngdi import NebulaReader

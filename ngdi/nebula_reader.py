@@ -7,16 +7,16 @@ from ngdi.nebula_data import NebulaDataFrameObject
 
 
 class NebulaReaderBase(object):
-    def __init__(self, engine=None, config=None : NebulaGraphConfig, **kwargs):
+    def __init__(self, engine=None, config=None, **kwargs):
         self.engine_type = engine
         self.config = config
-    
+
     def scan(self, **kwargs):
         raise NotImplementedError
-    
+
     def query(self, **kwargs):
         raise NotImplementedError
-    
+
     def load(self, **kwargs):
         raise NotImplementedError
 
@@ -27,8 +27,8 @@ class NebulaReaderBase(object):
         raise NotImplementedError
 
 
-class NebulaReader():
-    def __init__(self, engine="spark", config=NebulaGraphConfig() : NebulaGraphConfig, **kwargs):
+class NebulaReader:
+    def __init__(self, engine="spark", config=NebulaGraphConfig(), **kwargs):
         if self.engine_type == "spark":
             self.reader = NebulaReaderWithSpark(config, **kwargs)
         elif self.engine_type == "nebula":
@@ -38,15 +38,16 @@ class NebulaReader():
 
     def __getattr__(self, name):
         return getattr(self.reader, name)
-    
+
     def scan(self, **kwargs):
         raise NotImplementedError
 
 
 class NebulaReaderWithGraph(NebulaReaderBase):
-    def __init__(self, config : NebulaGraphConfig, **kwargs):
+    def __init__(self, config: NebulaGraphConfig, **kwargs):
         super().__init__("nebula", config, **kwargs)
         from ngdi.engines import NebulaEngine
+
         self.engine = NebulaEngine(config)
         self.raw_df = None
         self.df = None
@@ -71,10 +72,12 @@ class NebulaReaderWithGraph(NebulaReaderBase):
         # Implement the show method specific to Nebula engine
         raise NotImplementedError
 
+
 class NebulaReaderWithSpark(NebulaReaderBase):
-    def __init__(self, config : NebulaGraphConfig, **kwargs):
+    def __init__(self, config: NebulaGraphConfig, **kwargs):
         super().__init__("spark", config, **kwargs)
         from ngdi.engines import SparkEngine
+
         self.engine = SparkEngine(config)
         self.raw_df = None
         self.df = None
@@ -106,7 +109,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
         assert self.config.space, "space should be specified"
         edge_type = kwargs["edge"]
         props = kwargs["props"]
-        partition_number = kwargs.get("partition_number", 3) # default 3
+        partition_number = kwargs.get("partition_number", 3)  # default 3
 
         space_name = self.config.space
         metad_hosts = self.config.metad_hosts
@@ -114,13 +117,15 @@ class NebulaReaderWithSpark(NebulaReaderBase):
         spark = self.engine.spark
         datasource_format = self.engine.nebula_spark_ds
 
-        self.raw_df = spark.read.format(datasource_format).option(
-            "type", "edge").option(
-            "spaceName", space_name).option(
-            "label", edge_type).option(
-            "returnCols", props).option(
-            "metaAddress", metad_hosts).option(
-            "partitionNumber", partition_number)
+        self.raw_df = (
+            spark.read.format(datasource_format)
+            .option("type", "edge")
+            .option("spaceName", space_name)
+            .option("label", edge_type)
+            .option("returnCols", props)
+            .option("metaAddress", metad_hosts)
+            .option("partitionNumber", partition_number)
+        )
 
     def query(self, query=None, **kwargs):
         # Implement the query method specific to Spark engine
@@ -136,7 +141,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
             "ngql", "MATCH ()-[e:follow]->() return e LIMIT 1000").option(
             "partitionNumber", 1).load()
         """
-        
+
         # validate kwargs, there should be:
         # - edge: edge type, string
         # - props: properties to be returned, string
@@ -163,15 +168,17 @@ class NebulaReaderWithSpark(NebulaReaderBase):
         spark = self.engine.spark
         datasource_format = self.engine.nebula_spark_ds
 
-        self.raw_df = spark.read.format(datasource_format).option(
-            "type", "edge").option(
-            "spaceName", space_name).option(
-            "label", edge_type).option(
-            "returnCols", props).option(
-            "metaAddress", metad_hosts).option(
-            "graphAddress", graphd_hosts).option(
-            "ngql", query).option(
-            "partitionNumber", 1)
+        self.raw_df = (
+            spark.read.format(datasource_format)
+            .option("type", "edge")
+            .option("spaceName", space_name)
+            .option("label", edge_type)
+            .option("returnCols", props)
+            .option("metaAddress", metad_hosts)
+            .option("graphAddress", graphd_hosts)
+            .option("ngql", query)
+            .option("partitionNumber", 1)
+        )
 
     def load(self, **kwargs):
         # Implement the load method specific to Spark engine

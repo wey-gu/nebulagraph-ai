@@ -23,18 +23,18 @@ ENCODE_VERTEX_ID = True
 
 
 class BaseEngine(object):
-    def __init__(self, config=None : NebulaGraphConfig):
+    def __init__(self, config=None):
         pass
 
     def __str__(self):
         return f"BaseEngine: {self.type}"
-    
+
     def prepare():
         raise NotImplementedError
 
 
 class SparkEngine(BaseEngine):
-    def __init__(self, config=None : NebulaGraphConfig):
+    def __init__(self, config=None):
         self.type = "spark"
         self.config = config
         self.shuffle_partitions = DEFAULT_SHUFFLE_PARTITIONS
@@ -45,11 +45,13 @@ class SparkEngine(BaseEngine):
 
         from pyspark.sql import SparkSession
 
-        self.spark = SparkSession.builder.appName("NebulaGraph Data Intelligence") \
-            .config("spark.sql.shuffle.partitions", self.shuffle_partitions) \
-            .config("spark.executor.memory", self.executor_memory) \
-            .config("spark.driver.memory", self.driver_memory) \
+        self.spark = (
+            SparkSession.builder.appName("NebulaGraph Data Intelligence")
+            .config("spark.sql.shuffle.partitions", self.shuffle_partitions)
+            .config("spark.executor.memory", self.executor_memory)
+            .config("spark.driver.memory", self.driver_memory)
             .getOrCreate()
+        )
 
         self.jspark = self.spark._jsparkSession
         self.java_import = None
@@ -72,7 +74,7 @@ class SparkEngine(BaseEngine):
 
         if self.config.driver_memory is not None:
             self.driver_memory = self.config.driver_memory
-        
+
         if self.config.encode_vertex_id is not None:
             self.encode_vertex_id = self.config.encode_vertex_id
 
@@ -84,6 +86,7 @@ class SparkEngine(BaseEngine):
             return self.java_import
 
         from py4j.java_gateway import java_import
+
         # import "com.vesoft.nebula.algorithm.config.SparkConfig"
         java_import(self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig")
         return java_import
@@ -96,16 +99,16 @@ class SparkEngine(BaseEngine):
             java_import(spark._jvm, "com.vesoft.nebula.algorithm.lib.PageRankAlgo")
         """
         self.java_import(self.spark._jvm, class_name)
-    
+
     def import_algo_config_class(self, class_name):
         self.import_scala_class(f"{NEBULA_ALGO_CONFIG}.{class_name}")
-    
+
     def import_algo_lib_class(self, class_name):
         self.import_scala_class(f"{NEBULA_ALGO_LIB}.{class_name}")
 
 
 class NebulaEngine(object):
-    def __init__(self, config=None : NebulaGraphConfig):
+    def __init__(self, config=None):
         self.type = "nebula"
         self.config = config
         self.parse_config()

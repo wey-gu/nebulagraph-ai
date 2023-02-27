@@ -2,12 +2,15 @@
 
 [project]
 name = "ngdi"
-version = "0.1.0"
+version = "0.1.1"
 description = "NebulaGraph Data Intelligence Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "pyspark>=3.2.3",
+    "networkx>=2.5.1",
+]
 requires-python = ">=3.6"
 readme = "README.md"
 license = {text = "Apache-2.0"}

@@ -71,6 +71,8 @@ pyspark --driver-class-path /opt/nebulagraph/ngdi/package/nebula-spark-connector
     --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar
 ```
 
+Then we could access Jupyter Notebook with PySpark and refer to [examples/spark_engine.ipynb](examples/spark_engine.ipynb)
+
 ## Submit Algorithm job to Spark Cluster(Spark Engine)
 
 Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ngdi/package/`;

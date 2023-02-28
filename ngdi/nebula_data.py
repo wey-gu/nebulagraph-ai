@@ -20,6 +20,7 @@ class NebulaGraphObject:
     @property
     def algo(self):
         from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+
         return NebulaAlgorithmImpl(self)
 
     def get_nx_graph(self):
@@ -81,6 +82,7 @@ class NebulaDataFrameObject:
     @property
     def algo(self):
         from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+
         return NebulaAlgorithmImpl(self)
 
     def to_spark_df(self):

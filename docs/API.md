@@ -1,5 +1,11 @@
 # API Reference
 
+## NebulaGraphConfig
+
+ngdi.NebulaGraphConfig is the configuration for ngdi.NebulaReader, ngdi.NebulaWriter and ngdi.NebulaAlgorithm.
+
+See code for details: [ngdi/config.py](../ngdi/config.py)
+
 ## NebulaReader
 
 ngdi.NebulaReader reads data from NebulaGraph and constructs NebulaDataFrameObject or NebulaGraphObject.

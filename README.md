@@ -70,7 +70,7 @@ pyspark --driver-class-path /opt/nebulagraph/ngdi/package/nebula-spark-connector
     --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar
 ```
 
-Then we could access Jupyter Notebook with PySpark and refer to [examples/spark_engine.ipynb](examples/spark_engine.ipynb)
+Then we could access Jupyter Notebook with PySpark and refer to [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di/examples/spark_engine.ipynb)
 
 ## Submit Algorithm job to Spark Cluster(Spark Engine)
 
@@ -154,13 +154,13 @@ python3 pagerank.py
 
 ## Documentation
 
-[API Reference](docs/API.md)
+[API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
 
 ## Usage
 
 ### Spark Engine Examples
 
-See also: [examples/spark_engine.ipynb](examples/spark_engine.ipynb)
+See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di/examples/spark_engine.ipynb)
 
 ```python
 from ngdi import NebulaReader

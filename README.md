@@ -1,6 +1,6 @@
 # NebulaGraph Data Intelligence(ngdi) Suite
 
-![](https://user-images.githubusercontent.com/1651790/221790471-d4e5b487-9fc3-4126-ba50-77875a0e1686.jpeg)
+![image](https://user-images.githubusercontent.com/1651790/221792520-c997a104-8b1b-4ece-9355-ce3a2a300517.png)
 
 [![pdm-managed](https://img.shields.io/badge/pdm-managed-blueviolet)](https://pdm.fming.dev) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/release/python-360/) [![PyPI version](https://badge.fury.io/py/ngdi.svg)](https://badge.fury.io/py/ngdi)
 

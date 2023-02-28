@@ -28,6 +28,14 @@ The NebulaDataFrameObject returned by ngdi.NebulaReader.read() is a Pandas DataF
 - ngdi.NebulaReader.read() executes the read operation and returns a DataFrame or NebulaGraphObject.
 - ngdi.NebulaReader.show() shows the DataFrame returned by ngdi.NebulaReader.read().
 
+### engines
+
+ngdi.engines.SparkEngine is the Spark Engine for ngdi.NebulaReader, ngdi.NebulaWriter and ngdi.NebulaAlgorithm.
+
+ngdi.engines.NebulaEngine is the NebulaGraph Engine for ngdi.NebulaReader, ngdi.NebulaWriter.
+
+ngdi.engines.NetworkXEngine is the NetworkX Engine for ngdi.NebulaAlgorithm.
+
 ### NebulaDataFrameObject
 
 ngdi.NebulaDataFrameObject is a Spark DataFrame or Pandas DataFrame, which can be further processed by Spark SQL or Spark MLlib or Pandas.

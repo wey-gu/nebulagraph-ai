@@ -49,7 +49,7 @@ pip install ngdi
 - Spark 2.4, 3.0(not yet tested)
 - [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
 - [NebulaGraph Spark Connector 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/)
-- [NebulaGraph Algorithm 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
+- [NebulaGraph Algorithm 3.1+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
 
 ### NebulaGraph Engine Prerequisites
 - [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)

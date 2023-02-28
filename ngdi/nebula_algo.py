@@ -65,6 +65,7 @@ class NebulaDataFrameAlgorithm:
         """
         df = self.ndf_obj.data
         from pyspark.sql.dataframe import DataFrame as pyspark_sql_df
+
         if not isinstance(df, pyspark_sql_df):
             raise Exception(
                 "The NebulaDataFrameObject is not a spark dataframe",
@@ -72,40 +73,41 @@ class NebulaDataFrameAlgorithm:
             )
         return df
 
-    def pagerank(self, reset_prob: float = 0.15, max_iter: int = 10):
+    def pagerank(
+        self, reset_prob: float = 0.15, max_iter: int = 10, weighted: bool = False
+    ):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "PRConfig", "PageRankAlgo"
         )
         df = self.get_spark_dataframe()
         config = spark._jvm.PRConfig(max_iter, reset_prob, encode_vertex_id)
-        result = spark._jvm.PageRankAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.PageRankAlgo.apply(jspark, df._jdf, config, weighted)
+
         return result
 
-    def connected_components(self, max_iter: int = 10):
+    def connected_components(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "CcConfig", "ConnectedComponentsAlgo"
         )
         df = self.get_spark_dataframe()
         config = spark._jvm.CcConfig(max_iter, encode_vertex_id)
         result = spark._jvm.ConnectedComponentsAlgo.apply(
-            jspark, df._jdf, config, False
+            jspark, df._jdf, config, weighted
         )
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+
         return result
 
-    def label_propagation(self, max_iter: int = 10):
+    def label_propagation(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LPAConfig", "LabelPropagationAlgo"
         )
         df = self.get_spark_dataframe()
 
         config = spark._jvm.LPAConfig(max_iter, encode_vertex_id)
-        result = spark._jvm.LabelPropagationAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.LabelPropagationAlgo.apply(
+            jspark, df._jdf, config, weighted
+        )
+
         return result
 
     def louvain(self, max_iter: int = 10, internalIter: int = 10, tol: float = 0.0001):
@@ -116,8 +118,7 @@ class NebulaDataFrameAlgorithm:
 
         config = spark._jvm.LouvainConfig(max_iter, internalIter, tol, encode_vertex_id)
         result = spark._jvm.LouvainAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+
         return result
 
     def k_core(self, max_iter: int = 10, degree: int = 2):
@@ -128,59 +129,62 @@ class NebulaDataFrameAlgorithm:
 
         config = spark._jvm.KCoreConfig(max_iter, degree, encode_vertex_id)
 
-        result = spark._jvm.KCoreAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.KCoreAlgo.apply(jspark, df._jdf, config)
+
         return result
 
-    def shortest_path(self, landmarks: list):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "ShortestPathConfig", "ShortestPathAlgo"
-        )
-        df = self.get_spark_dataframe()
+    # def shortest_path(self, landmarks: list, weighted: bool = False):
+    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #         "ShortestPathConfig", "ShortestPathAlgo"
+    #     )
+    #     # TBD: ShortestPathAlgo is not yet encodeID compatible
+    #     df = self.get_spark_dataframe()
 
-        config = spark._jvm.ShortestPathConfig(landmarks, encode_vertex_id)
-        result = spark._jvm.ShortestPathAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
-        return result
+    #     config = spark._jvm.ShortestPathConfig(landmarks, encode_vertex_id)
+    #     result = spark._jvm.ShortestPathAlgo.apply(jspark, df._jdf, config, weighted)
 
-    def degree_statics(self, degree: bool = True, in_degree: bool = False, out_degree: bool = False):
+    #     return result
+
+    def degree_statics(self):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "DegreeStaticConfig", "DegreeStaticAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.DegreeStaticConfig(degree, in_degree, out_degree, encode_vertex_id)
-        result = spark._jvm.DegreeStaticAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        config = spark._jvm.DegreeStaticConfig(encode_vertex_id)
+        result = spark._jvm.DegreeStaticAlgo.apply(jspark, df._jdf, config)
+
         return result
 
-    def betweenness_centrality(self, max_iter: int = 10, degree: int = 2):
+    def betweenness_centrality(
+        self, max_iter: int = 10, degree: int = 2, weighted: bool = False
+    ):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "BetweennessConfig", "BetweennessCentralityAlgo"
         )
         df = self.get_spark_dataframe()
 
         config = spark._jvm.BetweennessConfig(max_iter, encode_vertex_id)
-        result = spark._jvm.BetweennessCentralityAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.BetweennessCentralityAlgo.apply(
+            jspark, df._jdf, config, weighted
+        )
+
         return result
 
     def coefficient_centrality(self, type: str = "local"):
         # type could be either "local" or "global"
-        assert type.lower() in ["local", "global"], "type should be either local or global"
+        assert type.lower() in ["local", "global"], (
+            "type should be either local or global"
+            f"in coefficient_centrality algo. Got type: {type}"
+        )
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "CoefficientConfig", "CoefficientCentralityAlgo"
+            "CoefficientConfig", "ClusteringCoefficientAlgo"
         )
         df = self.get_spark_dataframe()
 
         config = spark._jvm.CoefficientConfig(type, encode_vertex_id)
-        result = spark._jvm.CoefficientCentralityAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.ClusteringCoefficientAlgo.apply(jspark, df._jdf, config)
+
         return result
 
     def bfs(self, max_depth: int = 10, root: int = 1):
@@ -189,55 +193,89 @@ class NebulaDataFrameAlgorithm:
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.BfsConfig(source, max_depth, encode_vertex_id)
-        result = spark._jvm.BfsAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        config = spark._jvm.BfsConfig(max_depth, root, encode_vertex_id)
+        result = spark._jvm.BfsAlgo.apply(jspark, df._jdf, config)
+
         return result
 
-    def dfs(self, max_depth: int = 10, root: int = 1):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "DfsConfig", "DfsAlgo"
-        )
-        df = self.get_spark_dataframe()
+    # dfs is not yet supported, need to revisit upstream nebula-algorithm
+    #
+    # def dfs(self, max_depth: int = 10, root: int = 1):
+    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #         "DfsConfig", "DfsAlgo"
+    #     )
+    #     df = self.get_spark_dataframe()
 
-        config = spark._jvm.DfsConfig(source, max_depth, encode_vertex_id)
-        result = spark._jvm.DfsAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
-        return result
+    #     config = spark._jvm.DfsConfig(max_depth, root, encode_vertex_id)
+    #     result = spark._jvm.DfsAlgo.apply(jspark, df._jdf, config)
 
-    def hanp(self, hop_attenuation: float = 0.5, max_iter: int = 10, preference: float = 1.0):
+    #     return result
+
+    def hanp(
+        self,
+        hop_attenuation: float = 0.5,
+        max_iter: int = 10,
+        preference: float = 1.0,
+        weighted: bool = False,
+        preferences=None,
+    ):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "HanpConfig", "HanpAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.HanpConfig(hop_attenuation, max_iter, preference, encode_vertex_id)
-        result = spark._jvm.HanpAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        config = spark._jvm.HanpConfig(
+            hop_attenuation, max_iter, preference, encode_vertex_id
+        )
+        result = spark._jvm.HanpAlgo.apply(
+            jspark, df._jdf, config, weighted, preferences
+        )
+
         return result
 
-    def node2vec(
-            self, max_iter: int = 10, lr: float = 0.025,
-            data_num_partition: int = 10, model_num_partition: int = 10,
-            dim: int = 10, window: int = 3, walk_length: int = 5,
-            num_walks: int = 3, p: float = 1.0, q: float = 1.0,
-            directed: bool = False, degree: int = 30, emb_separator: str = ",",
-            model_path: str = "hdfs://127.0.0.1:9000/model"):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "Node2VecConfig", "Node2VecAlgo"
-        )
-        df = self.get_spark_dataframe()
-        config = spark._jvm.Node2VecConfig(
-            max_iter, lr, data_num_partition, model_num_partition, dim, window,
-            walk_length, num_walks, p, q, directed, degree, emb_separator, model_path, encode_vertex_id
-        )
-        result = spark._jvm.Node2VecAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
-        return result
+    # def node2vec(
+    #     self,
+    #     max_iter: int = 10,
+    #     lr: float = 0.025,
+    #     data_num_partition: int = 10,
+    #     model_num_partition: int = 10,
+    #     dim: int = 10,
+    #     window: int = 3,
+    #     walk_length: int = 5,
+    #     num_walks: int = 3,
+    #     p: float = 1.0,
+    #     q: float = 1.0,
+    #     directed: bool = False,
+    #     degree: int = 30,
+    #     emb_separator: str = ",",
+    #     model_path: str = "hdfs://127.0.0.1:9000/model",
+    #     weighted: bool = False,
+    # ):
+    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #         "Node2vecConfig", "Node2VecAlgo"
+    #     )
+    #     # TBD: Node2VecAlgo is not yet encodeID compatible
+    #     df = self.get_spark_dataframe()
+    #     config = spark._jvm.Node2vecConfig(
+    #         max_iter,
+    #         lr,
+    #         data_num_partition,
+    #         model_num_partition,
+    #         dim,
+    #         window,
+    #         walk_length,
+    #         num_walks,
+    #         p,
+    #         q,
+    #         directed,
+    #         degree,
+    #         emb_separator,
+    #         model_path,
+    #         encode_vertex_id,
+    #     )
+    #     result = spark._jvm.Node2VecAlgo.apply(jspark, df._jdf, config, weighted)
+
+    #     return result
 
     def jaccard(self, tol: float = 1.0):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
@@ -246,47 +284,42 @@ class NebulaDataFrameAlgorithm:
         df = self.get_spark_dataframe()
 
         config = spark._jvm.JaccardConfig(tol, encode_vertex_id)
-        result = spark._jvm.JaccardAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        result = spark._jvm.JaccardAlgo.apply(jspark, df._jdf, config)
+
         return result
 
-    def strong_connected_components(self, max_iter: int = 10):
+    def strong_connected_components(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "CcConfig", "StronglyConnectedComponentsAlgo"
         )
         df = self.get_spark_dataframe()
         config = spark._jvm.CcConfig(max_iter, encode_vertex_id)
         result = spark._jvm.StronglyConnectedComponentsAlgo.apply(
-            jspark, df._jdf, config, False
+            jspark, df._jdf, config, weighted
         )
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+
         return result
 
     def triangle_count(self):
-        # TBD: TriangleCountConfig is not yet supported in nebula-algorithm
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "TriangleCountConfig", "TriangleCountAlgo"
+            "TriangleConfig", "TriangleCountAlgo"
         )
         df = self.get_spark_dataframe()
-        config = spark._jvm.TriangleCountConfig(encode_vertex_id)
-        result = spark._jvm.TriangleCountAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
+        config = spark._jvm.TriangleConfig(encode_vertex_id)
+        result = spark._jvm.TriangleCountAlgo.apply(jspark, df._jdf, config)
+
         return result
 
-    def closeness(self, weighted: bool = False):
-        # TBD: ClosenessConfig is not yet supported in nebula-algorithm
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-            "ClosenessConfig", "ClosenessAlgo"
-        )
-        df = self.get_spark_dataframe()
-        config = spark._jvm.ClosenessConfig(weighted, encode_vertex_id)
-        result = spark._jvm.ClosenessAlgo.apply(jspark, df._jdf, config, False)
-        # TBD: False means not to use the default partitioner,
-        # we could make it configurable in the future
-        return result
+    # def closeness(self, weighted: bool = False):
+    #     # TBD: ClosenessAlgo is not yet encodeID compatible
+    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #         "ClosenessConfig", "ClosenessAlgo"
+    #     )
+    #     df = self.get_spark_dataframe()
+    #     config = spark._jvm.ClosenessConfig(weighted, encode_vertex_id)
+    #     result = spark._jvm.ClosenessAlgo.apply(jspark, df._jdf, config, False)
+
+    #     return result
 
 
 class NebulaGraphAlgorithm:
@@ -312,6 +345,4 @@ class NebulaGraphAlgorithm:
 
     def pagerank(self, reset_prob=0.15, max_iter=10):
         self.check_engine()
-
-        g = self.graph
-        return result
+        pass

@@ -100,6 +100,8 @@ df = reader.read()
 pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10)
 ```
 
+> Note, this could be done by Airflow, or other job scheduler in production.
+
 Then we can submit the job to Spark cluster:
 
 ```bash
@@ -110,6 +112,22 @@ spark-submit --master spark://master:7077 \
     --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar \
     --py-files /opt/nebulagraph/ngdi/package/ngdi-py3-env.zip \
     pagerank.py
+```
+
+## Run ngdi algorithm job from python script(Spark Engine)
+
+We have everything ready as above, including the `pagerank.py`.
+
+```python
+import subprocess
+
+subprocess.run(["spark-submit", "--master", "spark://master:7077",
+                "--driver-class-path", "/opt/nebulagraph/ngdi/package/nebula-spark-connector.jar",
+                "--driver-class-path", "/opt/nebulagraph/ngdi/package/nebula-algo.jar",
+                "--jars", "/opt/nebulagraph/ngdi/package/nebula-spark-connector.jar",
+                "--jars", "/opt/nebulagraph/ngdi/package/nebula-algo.jar",
+                "--py-files", "/opt/nebulagraph/ngdi/package/ngdi-py3-env.zip",
+                "pagerank.py"])
 ```
 
 ## Run on single machine(NebulaGraph Engine)

@@ -26,14 +26,36 @@ The NebulaDataFrameObject returned by ngdi.NebulaReader.read() is a Pandas DataF
 - ngdi.NebulaReader.scan() sets the scan statement.
 - ngdi.NebulaReader.load() sets the load statement.
 - ngdi.NebulaReader.read() executes the read operation and returns a DataFrame or NebulaGraphObject.
-- ngdi.NebulaReader.to_graph() converts the DataFrame returned by ngdi.NebulaReader.read() to a NebulaGraphObject.
-- ngdi.NebulaReader.get_graph() returns the NebulaGraphObject.
-- ngdi.NebulaReader.get_dataframe() returns the DataFrame object.
 - ngdi.NebulaReader.show() shows the DataFrame returned by ngdi.NebulaReader.read().
 
-#### Examples
+### NebulaDataFrameObject
 
-##### Spark Engine Examples
+ngdi.NebulaDataFrameObject is a Spark DataFrame or Pandas DataFrame, which can be further processed by Spark SQL or Spark MLlib or Pandas.
+
+#### Functions
+
+- ngdi.NebulaDataFrameObject.algo.pagerank() runs the PageRank algorithm on the Spark DataFrame.
+- ngdi.NebulaDataFrameObject.to_graphx() converts the DataFrame to a GraphX Graph. not yet implemented.
+
+### NebulaGraphObject
+
+ngdi.NebulaGraphObject is a GraphX Graph or NetworkX Graph, which can be further processed by GraphX or NetworkX.
+
+#### Functions
+
+- ngdi.NebulaGraphObject.algo.pagerank() runs the PageRank algorithm on the NetworkX Graph. not yet implemented.
+
+### NebulaAlgorithm
+
+ngdi.NebulaAlgorithm is a collection of algorithms that can be run on ngdi.NebulaDataFrameObject(spark engine) or ngdi.NebulaGraphObject(networkx engine).
+
+### NebulaGNN
+
+ngdi.NebulaGNN is a collection of graph neural network models that can be run on ngdi. not yet implemented.
+
+## Examples
+
+### Spark Engine Examples
 
 See also: [examples/spark_engine.ipynb](examples/spark_engine.ipynb)
 
@@ -69,7 +91,7 @@ pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some
 graph = reader.to_graphx() # not yet implemented
 ```
 
-##### NebulaGraph Engine Examples(not yet implemented)
+### NebulaGraph Engine Examples(not yet implemented)
 
 ```python
 from ngdi import NebulaReader

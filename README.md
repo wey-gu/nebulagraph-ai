@@ -2,19 +2,57 @@
 
 NebulaGraph Data Intelligence Suite for Python (ngdi) is a Python library for NebulaGraph Data Intelligence.
 
-## Installation
+ngdi provides a set of APIs for data scientists to read, write and analyze/compute data in NebulaGraph, on single(NetworkX for now) machine or distributed(Spark for now) cluster.
+```
+        ┌───────────────────────────────────────────────────┐            
+        │   Spark Cluster                                   │            
+        │    .─────.    .─────.    .─────.    .─────.       │            
+     ┌─▶│   :       ;  :       ;  :       ;  :       ;      │            
+     │  │     `───'      `───'      `───'      `───'        │            
+Algorithm                                                   │            
+  Spark └───────────────────────────────────────────────────┘            
+ Engine ┌───────────────────────────────────────────────────────────────┐
+     └──┤                                                               │
+        │   NebulaGraph Data Intelligence Suite(ngdi)                   │
+        │     ┌────────┐    ┌──────┐    ┌────────┐   ┌─────┐            │
+        │     │ Reader │    │ Algo │    │ Writer │   │ GNN │            │
+        │     └────────┘    └──────┘    └────────┘   └─────┘            │
+        │          ├────────────┴───┬────────┴─────┐    └──────┐        │
+        │          ▼                ▼              ▼           ▼        │
+        │   ┌─────────────┐ ┌──────────────┐ ┌──────────┐┌──────────┐   │
+     ┌──┤   │ SparkEngine │ │ NebulaEngine │ │ NetworkX ││ DGLEngine│   │
+     │  │   └─────────────┘ └──────────────┘ └──────────┘└──────────┘   │
+     │  └──────────┬────────────────────────────────────────────────────┘
+     │             │        Spark                                        
+     │             └────────Reader ────────────┐                         
+Spark Reader              Query Mode           │                         
+Scan Mode                                      ▼                         
+     │  ┌───────────────────────────────────────────────────┐            
+     │  │  NebulaGraph Graph Engine         Nebula-GraphD   │            
+     │  ├──────────────────────────────┬────────────────────┤            
+     │  │  NebulaGraph Storage Engine  │                    │            
+     └─▶│  Nebula-StorageD             │    Nebula-Metad    │            
+        └──────────────────────────────┴────────────────────┘            
+```
 
-Prerequisites:
-- Spark 2.4
-- NebulaGraph 3.4+
-- [NebulaGraph Spark Connector 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/)
-- [NebulaGraph Algorithm 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
+## Installation
 
 ```bash
 pip install ngdi
 ```
 
-## Run on PySpark Jupyter Notebook
+### Spark Engine Prerequisites
+- Spark 2.4, 3.0(not yet tested)
+- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
+- [NebulaGraph Spark Connector 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/)
+- [NebulaGraph Algorithm 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
+
+### NebulaGraph Engine Prerequisites
+- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
+- [NebulaGraph Python Client 3.4+](https://github.com/vesoft-inc/nebula-python)
+- [NetworkX](https://networkx.org/)
+
+## Run on PySpark Jupyter Notebook(Spark Engine)
 
 Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ngdi/package/`.
 
@@ -29,7 +67,7 @@ pyspark --driver-class-path /opt/nebulagraph/ngdi/package/nebula-spark-connector
     --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar
 ```
 
-## Submit to Spark Cluster
+## Submit Algorithm job to Spark Cluster(Spark Engine)
 
 Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ngdi/package/`;
 We have put the `ngdi-py3-env.zip` in `/opt/nebulagraph/ngdi/package/`.
@@ -59,7 +97,7 @@ reader.query(query=query, edge="follow", props="degree")
 df = reader.read()
 
 # run pagerank algorithm
-pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some time
+pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10)
 ```
 
 Then we can submit the job to Spark cluster:
@@ -72,6 +110,23 @@ spark-submit --master spark://master:7077 \
     --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar \
     --py-files /opt/nebulagraph/ngdi/package/ngdi-py3-env.zip \
     pagerank.py
+```
+
+## Run on single machine(NebulaGraph Engine)
+
+Assuming we have NebulaGraph cluster up and running, and we have the following Algorithm job in `pagerank_nebula_engine.py`:
+
+This file is the same as `pagerank.py` except for the following line:
+
+```diff
+- reader = NebulaReader(engine="spark")
++ reader = NebulaReader(engine="nebula")
+```
+
+Then we can run the job on single machine:
+
+```bash
+python3 pagerank.py
 ```
 
 ## Documentation

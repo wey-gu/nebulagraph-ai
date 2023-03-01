@@ -6,38 +6,6 @@
 
 NebulaGraph Data Intelligence Suite for Python (ngdi) is a powerful Python library that offers a range of APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph. This library allows data scientists to perform these operations on a single machine using NetworkX, or in a distributed computing environment using Spark, in unified and intuitive API. With ngdi, data scientists can easily access and process data in NebulaGraph, enabling them to perform advanced analytics and gain valuable insights.
 
-```
-        ┌───────────────────────────────────────────────────┐            
-        │   Spark Cluster                                   │            
-        │    .─────.    .─────.    .─────.    .─────.       │            
-     ┌─▶│   :       ;  :       ;  :       ;  :       ;      │            
-     │  │     `───'      `───'      `───'      `───'        │            
-Algorithm                                                   │            
-  Spark └───────────────────────────────────────────────────┘            
- Engine ┌────────────────────────────────────────────────────────────────┐
-     └──┤                                                                │
-        │   NebulaGraph Data Intelligence Suite(ngdi)                    │
-        │     ┌────────┐    ┌──────┐    ┌────────┐   ┌─────┐             │
-        │     │ Reader │    │ Algo │    │ Writer │   │ GNN │             │
-        │     └────────┘    └──────┘    └────────┘   └─────┘             │
-        │          ├────────────┴───┬────────┴─────┐    └──────┐         │
-        │          ▼                ▼              ▼           ▼         │
-        │   ┌─────────────┐ ┌──────────────┐ ┌──────────┐┌───────────┐   │
-     ┌──┤   │ SparkEngine │ │ NebulaEngine │ │ NetworkX ││ DGLEngine │   │
-     │  │   └─────────────┘ └──────────────┘ └──────────┘└───────────┘   │
-     │  └──────────┬─────────────────────────────────────────────────────┘
-     │             │        Spark                                        
-     │             └────────Reader ────────────┐                         
-Spark Reader              Query Mode           │                         
-Scan Mode                                      ▼                         
-     │  ┌───────────────────────────────────────────────────┐            
-     │  │  NebulaGraph Graph Engine         Nebula-GraphD   │            
-     │  ├──────────────────────────────┬────────────────────┤            
-     │  │  NebulaGraph Storage Engine  │                    │            
-     └─▶│  Nebula-StorageD             │    Nebula-Metad    │            
-        └──────────────────────────────┴────────────────────┘            
-```
-
 ## Quick Start in 5 Minutes
 
 - Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md).
@@ -122,4 +90,40 @@ Basically the same as Spark Engine, but with `engine="nebula"`.
 ```diff
 - reader = NebulaReader(engine="spark")
 + reader = NebulaReader(engine="nebula")
+```
+
+## How it works
+
+ngdi is an unified abstraction layer for different engines, the current implementation is based on Spark, NetworkX, DGL and NebulaGraph, but it's easy to extend to other engines like Flink, GraphScope, PyG etc.
+
+```
+        ┌───────────────────────────────────────────────────┐            
+        │   Spark Cluster                                   │            
+        │    .─────.    .─────.    .─────.    .─────.       │            
+     ┌─▶│   :       ;  :       ;  :       ;  :       ;      │            
+     │  │     `───'      `───'      `───'      `───'        │            
+Algorithm                                                   │            
+  Spark └───────────────────────────────────────────────────┘            
+ Engine ┌────────────────────────────────────────────────────────────────┐
+     └──┤                                                                │
+        │   NebulaGraph Data Intelligence Suite(ngdi)                    │
+        │     ┌────────┐    ┌──────┐    ┌────────┐   ┌─────┐             │
+        │     │ Reader │    │ Algo │    │ Writer │   │ GNN │             │
+        │     └────────┘    └──────┘    └────────┘   └─────┘             │
+        │          ├────────────┴───┬────────┴─────┐    └──────┐         │
+        │          ▼                ▼              ▼           ▼         │
+        │   ┌─────────────┐ ┌──────────────┐ ┌──────────┐┌───────────┐   │
+     ┌──┤   │ SparkEngine │ │ NebulaEngine │ │ NetworkX ││ DGLEngine │   │
+     │  │   └─────────────┘ └──────────────┘ └──────────┘└───────────┘   │
+     │  └──────────┬─────────────────────────────────────────────────────┘
+     │             │        Spark                                        
+     │             └────────Reader ────────────┐                         
+Spark Reader              Query Mode           │                         
+Scan Mode                                      ▼                         
+     │  ┌───────────────────────────────────────────────────┐            
+     │  │  NebulaGraph Graph Engine         Nebula-GraphD   │            
+     │  ├──────────────────────────────┬────────────────────┤            
+     │  │  NebulaGraph Storage Engine  │                    │            
+     └─▶│  Nebula-StorageD             │    Nebula-Metad    │            
+        └──────────────────────────────┴────────────────────┘            
 ```

@@ -69,6 +69,18 @@ reader.query(query=query, edge="follow", props="degree")
 df = reader.read()
 ```
 
+- Load mode
+
+> not yet implemented
+
+```python
+# read data with spark engine, load mode (not yet implemented)
+reader = NebulaReader(engine="spark")
+reader.load(source="hdfs://path/to/edge.csv", format="csv", header=True, schema="src: string, dst: string, rank: int")
+df = reader.read() # this will take some time
+df.show(10)
+```
+
 ## engines
 
 - `ngdi.engines.SparkEngine` is the Spark Engine for `ngdi.NebulaReader`, `ngdi.NebulaWriter` and `ngdi.NebulaAlgorithm`.

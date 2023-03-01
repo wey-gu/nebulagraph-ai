@@ -19,21 +19,10 @@ NebulaGraph Data Intelligence Suite for Python (ngdi) is a powerful Python libra
 pip install ngdi
 ```
 
-### Spark Engine Prerequisites
-- Spark 2.4, 3.0(not yet tested)
-- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
-- [NebulaGraph Spark Connector 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/)
-- [NebulaGraph Algorithm 3.1+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
-
-### NebulaGraph Engine Prerequisites
-- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
-- [NebulaGraph Python Client 3.4+](https://github.com/vesoft-inc/nebula-python)
-- [NetworkX](https://networkx.org/)
-
-
 ## Documentation
 
 [Environment Setup](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md)
+
 [API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
 
 ## Usage
@@ -127,3 +116,14 @@ Scan Mode                                      ▼
      └─▶│  Nebula-StorageD             │    Nebula-Metad    │            
         └──────────────────────────────┴────────────────────┘            
 ```
+
+### Spark Engine Prerequisites
+- Spark 2.4, 3.0(not yet tested)
+- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
+- [NebulaGraph Spark Connector 3.4+](https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/)
+- [NebulaGraph Algorithm 3.1+](https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/)
+
+### NebulaGraph Engine Prerequisites
+- [NebulaGraph 3.4+](https://github.com/vesoft-inc/nebula)
+- [NebulaGraph Python Client 3.4+](https://github.com/vesoft-inc/nebula-python)
+- [NetworkX](https://networkx.org/)

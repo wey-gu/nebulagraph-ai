@@ -7,6 +7,11 @@ from ngdi.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
 from ngdi.nebula_data import NebulaDataFrameObject as NebulaDataFrameObjectImpl
 
 
+def algo(func):
+    func.is_algo = True
+    return func
+
+
 class NebulaAlgorithm:
     def __init__(self, obj: NebulaGraphObjectImpl or NebulaDataFrameObjectImpl):
         if isinstance(obj, NebulaGraphObjectImpl):
@@ -33,6 +38,17 @@ class NebulaDataFrameAlgorithm:
 
     def __init__(self, ndf_obj: NebulaDataFrameObjectImpl):
         self.ndf_obj = ndf_obj
+        self.algorithms = []
+
+    def register_algo(self, func):
+        self.algorithms.append(func.__name__)
+
+    def get_all_algo(self):
+        if not self.algorithms:
+            for name, func in NebulaDataFrameAlgorithm.__dict__.items():
+                if hasattr(func, "is_algo"):
+                    self.register_algo(func)
+        return self.algorithms
 
     def check_engine(self):
         """
@@ -73,6 +89,7 @@ class NebulaDataFrameAlgorithm:
             )
         return df
 
+    @algo
     def pagerank(
         self, reset_prob: float = 0.15, max_iter: int = 10, weighted: bool = False
     ):
@@ -85,6 +102,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def connected_components(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "CcConfig", "ConnectedComponentsAlgo"
@@ -97,6 +115,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def label_propagation(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LPAConfig", "LabelPropagationAlgo"
@@ -110,6 +129,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def louvain(self, max_iter: int = 10, internalIter: int = 10, tol: float = 0.0001):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LouvainConfig", "LouvainAlgo"
@@ -121,6 +141,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def k_core(self, max_iter: int = 10, degree: int = 2):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "KCoreConfig", "KCoreAlgo"
@@ -145,6 +166,7 @@ class NebulaDataFrameAlgorithm:
 
     #     return result
 
+    @algo
     def degree_statics(self):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "DegreeStaticConfig", "DegreeStaticAlgo"
@@ -156,6 +178,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def betweenness_centrality(
         self, max_iter: int = 10, degree: int = 2, weighted: bool = False
     ):
@@ -171,6 +194,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def coefficient_centrality(self, type: str = "local"):
         # type could be either "local" or "global"
         assert type.lower() in ["local", "global"], (
@@ -187,6 +211,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def bfs(self, max_depth: int = 10, root: int = 1):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "BfsConfig", "BfsAlgo"
@@ -199,18 +224,19 @@ class NebulaDataFrameAlgorithm:
         return result
 
     # dfs is not yet supported, need to revisit upstream nebula-algorithm
-    #
-    # def dfs(self, max_depth: int = 10, root: int = 1):
-    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
-    #         "DfsConfig", "DfsAlgo"
-    #     )
-    #     df = self.get_spark_dataframe()
+    @algo
+    def dfs(self, max_depth: int = 10, root: int = 1):
+        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+            "DfsConfig", "DfsAlgo"
+        )
+        df = self.get_spark_dataframe()
 
-    #     config = spark._jvm.DfsConfig(max_depth, root, encode_vertex_id)
-    #     result = spark._jvm.DfsAlgo.apply(jspark, df._jdf, config)
+        config = spark._jvm.DfsConfig(max_depth, root, encode_vertex_id)
+        result = spark._jvm.DfsAlgo.apply(jspark, df._jdf, config)
 
-    #     return result
+        return result
 
+    @algo
     def hanp(
         self,
         hop_attenuation: float = 0.5,
@@ -233,6 +259,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    # @algo
     # def node2vec(
     #     self,
     #     max_iter: int = 10,
@@ -277,6 +304,7 @@ class NebulaDataFrameAlgorithm:
 
     #     return result
 
+    @algo
     def jaccard(self, tol: float = 1.0):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "JaccardConfig", "JaccardAlgo"
@@ -288,6 +316,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def strong_connected_components(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "CcConfig", "StronglyConnectedComponentsAlgo"
@@ -300,6 +329,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    @algo
     def triangle_count(self):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "TriangleConfig", "TriangleCountAlgo"
@@ -310,6 +340,7 @@ class NebulaDataFrameAlgorithm:
 
         return result
 
+    # @algo
     # def closeness(self, weighted: bool = False):
     #     # TBD: ClosenessAlgo is not yet encodeID compatible
     #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
@@ -329,6 +360,17 @@ class NebulaGraphAlgorithm:
 
     def __init__(self, graph):
         self.graph = graph
+        self.algorithms = []
+
+    def register_algo(self, func):
+        self.algorithms.append(func.__name__)
+
+    def get_all_algo(self):
+        if not self.algorithms:
+            for name, func in NebulaGraphAlgorithm.__dict__.items():
+                if hasattr(func, "is_algo"):
+                    self.register_algo(func)
+        return self.algorithms
 
     def check_engine(self):
         """
@@ -343,6 +385,7 @@ class NebulaGraphAlgorithm:
                 "For example: df = nebula_graph.to_df; df.algo.pagerank()",
             )
 
+    @algo
     def pagerank(self, reset_prob=0.15, max_iter=10):
         self.check_engine()
         pass

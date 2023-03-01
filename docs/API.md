@@ -53,6 +53,7 @@ ngdi.`NebulaDataFrameObject` is a Spark DataFrame or Pandas DataFrame, which can
 
 ### Functions
 
+- `ngdi.NebulaGraphObject.algo.get_all_algo()` returns all algorithms supported by the engine.
 - `ngdi.NebulaGraphObject.algo.pagerank()` runs the PageRank algorithm on the NetworkX Graph. not yet implemented.
 
 ## NebulaAlgorithm

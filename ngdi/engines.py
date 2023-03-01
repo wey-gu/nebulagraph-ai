@@ -58,6 +58,8 @@ class SparkEngine(BaseEngine):
         self.prepare()
         self.nebula_spark_ds = NEBULA_SPARK_CONNECTOR_DATASOURCE
 
+        # TBD: ping NebulaGraph Meta and Storage Server, fail and guide user to check config
+
     def __str__(self):
         return f"SparkEngine: {self.spark}"
 
@@ -87,12 +89,14 @@ class SparkEngine(BaseEngine):
 
         from py4j.java_gateway import java_import
 
+        # scala:
         # import "com.vesoft.nebula.algorithm.config.SparkConfig"
         java_import(self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig")
         return java_import
 
     def import_scala_class(self, class_name):
         """
+        For example:
         scala:
             import "com.vesoft.nebula.algorithm.lib.PageRankAlgo"
         python:
@@ -107,7 +111,7 @@ class SparkEngine(BaseEngine):
         self.import_scala_class(f"{NEBULA_ALGO_LIB}.{class_name}")
 
 
-class NebulaEngine(object):
+class NebulaEngine(BaseEngine):
     def __init__(self, config=None):
         self.type = "nebula"
         self.config = config

@@ -1,5 +1,16 @@
 # API Reference
 
+## Table of contents
+
+- [NebulaGraphConfig](#NebulaGraphConfig)
+- [NebulaReader](#NebulaReader)
+- [engines](#engines)
+- [NebulaDataFrameObject](#NebulaDataFrameObject)
+- [NebulaGraphObject](#NebulaGraphObject)
+- [NebulaAlgorithm](#NebulaAlgorithm)
+- [NebulaWriter](#NebulaWriter)
+- [NebulaGNN](#NebulaGNN)
+
 ## NebulaGraphConfig
 
 `ngdi.NebulaGraphConfig` is the configuration for `ngdi.NebulaReader`, `ngdi.NebulaWriter` and `ngdi.NebulaAlgorithm`.
@@ -26,9 +37,37 @@ In NebulaGraph Engine:
 
 - `ngdi.NebulaReader.query()` sets the query statement.
 - `ngdi.NebulaReader.scan()` sets the scan statement.
-- `ngdi.NebulaReader.load()` sets the load statement.
+- `ngdi.NebulaReader.load()` sets the load statement. (not yet implemented)
 - `ngdi.NebulaReader.read()` executes the read operation and returns a DataFrame or `NebulaGraphObject`.
 - `ngdi.NebulaReader.show()` shows the DataFrame returned by `ngdi.NebulaReader.read()`.
+
+### Examples
+
+#### Spark Engine
+
+- Scan mode
+
+```python
+from ngdi import NebulaReader
+# read data with spark engine, scan mode
+reader = NebulaReader(engine="spark")
+reader.scan(edge="follow", props="degree")
+df = reader.read()
+```
+
+- Query mode
+
+```python
+from ngdi import NebulaReader
+# read data with spark engine, query mode
+reader = NebulaReader(engine="spark")
+query = """
+    MATCH ()-[e:follow]->()
+    RETURN e LIMIT 100000
+"""
+reader.query(query=query, edge="follow", props="degree")
+df = reader.read()
+```
 
 ## engines
 
@@ -59,6 +98,75 @@ ngdi.`NebulaDataFrameObject` is a Spark DataFrame or Pandas DataFrame, which can
 ## NebulaAlgorithm
 
 `ngdi.NebulaAlgorithm` is a collection of algorithms that can be run on ngdi.`NebulaDataFrameObject`(spark engine) or `ngdi.NebulaGraphObject`(networkx engine).
+
+## NebulaWriter
+
+`ngdi.NebulaWriter` writes the computed or queried data to different sinks.
+Supported sinks include:
+- NebulaGraph(Spark Engine, NebulaGraph Engine)
+- CSV(Spark Engine, NebulaGraph Engine)
+- S3(Spark Engine, NebulaGraph Engine), not yet implemented.
+
+### Functions
+
+- `ngdi.NebulaWriter.options()` sets the options for the sink.
+- `ngdi.NebulaWriter.write()` writes the data to the sink.
+- `ngdi.NebulaWriter.show_options()` shows the options for the sink.
+
+### Examples
+
+#### Spark Engine
+
+- NebulaGraph sink
+
+Assume that we have a Spark DataFrame `df_result` computed with `df.algo.louvain()` with the following schema:
+
+```python
+df_result.printSchema()
+# result:
+root
+ |-- _id: string (nullable = false)
+ |-- louvain: string (nullable = false)
+```
+
+We created a TAG `louvain` in NebulaGraph on same space with the following schema:
+
+```ngql
+CREATE TAG IF NOT EXISTS louvain (
+    cluster_id string NOT NULL
+);
+```
+
+Then, we could write the louvain result to NebulaGraph, map the column `louvain` to `cluster_id` with the following code:
+
+```python
+from ngdi import NebulaWriter
+from ngdi.config import NebulaGraphConfig
+
+config = NebulaGraphConfig()
+
+properties = {
+    "louvain": "cluster_id"
+}
+
+writer = NebulaWriter(data=df_result, sink="nebulagraph_vertex", config=config, engine="spark")
+writer.set_options(
+    tag="louvain",
+    vid_field="_id",
+    properties=properties,
+    batch_size=256,
+    write_mode="insert",
+)
+writer.write()
+```
+
+Then we could query the result in NebulaGraph:
+
+```cypher
+MATCH (v:louvain)
+RETURN id(v), v.louvain.cluster_id LIMIT 10;
+```
+
 
 ## NebulaGNN
 

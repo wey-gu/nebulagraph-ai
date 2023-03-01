@@ -42,7 +42,8 @@ Scan Mode                                      ▼
 
 - Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md).
 - Install ngdi with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
-- Open the demo notebook and run cells with `Shift+Enter` or `Ctrl+Enter`.
+- Open the demo notebook and run cells one by one.
+- Check the [API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
 
 ## Installation
 
@@ -64,6 +65,7 @@ pip install ngdi
 
 ## Documentation
 
+[Environment Setup](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md)
 [API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
 
 ## Usage
@@ -74,36 +76,18 @@ See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di
 
 Run Algorithm on top of NebulaGraph:
 
+> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-di/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-di/docs/API.md) for more details.
+
 ```python
 from ngdi import NebulaReader
-
-# read data with spark engine, query mode
-reader = NebulaReader(engine="spark")
-query = """
-    MATCH ()-[e:follow]->()
-    RETURN e LIMIT 100000
-"""
-reader.query(query=query, edge="follow", props="degree")
-df = reader.read() # this will take some time
-df.show(10)
 
 # read data with spark engine, scan mode
 reader = NebulaReader(engine="spark")
 reader.scan(edge="follow", props="degree")
-df = reader.read() # this will take some time
-df.show(10)
-
-# read data with spark engine, load mode (not yet implemented)
-reader = NebulaReader(engine="spark")
-reader.load(source="hdfs://path/to/edge.csv", format="csv", header=True, schema="src: string, dst: string, rank: int")
-df = reader.read() # this will take some time
-df.show(10)
+df = reader.read()
 
 # run pagerank algorithm
-pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10) # this will take some time
-
-# convert dataframe to NebulaGraphObject
-graph = reader.to_graphx() # not yet implemented
+pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10)
 ```
 
 Write back to NebulaGraph:
@@ -114,18 +98,13 @@ from ngdi.config import NebulaGraphConfig
 
 config = NebulaGraphConfig()
 
-properties = {
-    "louvain": "cluster_id"
-}
+properties = {"louvain": "cluster_id"}
 
-writer = NebulaWriter(data=df_result, sink="nebulagraph_vertex", config=config, engine="spark")
+writer = NebulaWriter(
+    data=df_result, sink="nebulagraph_vertex", config=config, engine="spark")
 writer.set_options(
-    tag="louvain",
-    vid_field="_id",
-    properties=properties,
-    batch_size=256,
-    write_mode="insert",
-)
+    tag="louvain", vid_field="_id", properties=properties,
+    batch_size=256, write_mode="insert",)
 writer.write()
 ```
 

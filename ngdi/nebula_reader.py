@@ -28,7 +28,9 @@ class NebulaReaderBase(object):
 
 
 class NebulaReader:
-    def __init__(self, engine="spark", config=NebulaGraphConfig(), **kwargs):
+    def __init__(
+        self, engine="spark", config: NebulaGraphConfig = NebulaGraphConfig(), **kwargs
+    ):
         self.engine_type = engine
         if self.engine_type == "spark":
             self.reader = NebulaReaderWithSpark(config, **kwargs)
@@ -126,7 +128,7 @@ class NebulaReaderWithSpark(NebulaReaderBase):
             .option("partitionNumber", partition_number)
         )
 
-    def query(self, query=None, **kwargs):
+    def query(self, query: str, **kwargs):
         # Implement the query method specific to Spark engine
         """
         df = spark.read.format(

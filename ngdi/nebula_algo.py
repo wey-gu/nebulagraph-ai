@@ -130,7 +130,7 @@ class NebulaDataFrameAlgorithm:
         return result
 
     @algo
-    def louvain(self, max_iter: int = 10, internalIter: int = 10, tol: float = 0.0001):
+    def louvain(self, max_iter: int = 20, internalIter: int = 10, tol: float = 0.5):
         engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
             "LouvainConfig", "LouvainAlgo"
         )

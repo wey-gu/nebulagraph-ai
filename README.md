@@ -38,6 +38,12 @@ Scan Mode                                      ▼
         └──────────────────────────────┴────────────────────┘            
 ```
 
+## Quick Start in 5 Minutes
+
+- Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md).
+- Install ngdi with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
+- Open the demo notebook and run cells with `Shift+Enter` or `Ctrl+Enter`.
+
 ## Installation
 
 ```bash

@@ -44,7 +44,7 @@ With the support of single-machine engine(NetworkX), or distributed computing en
 - Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md).
 - Install ngdi with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
 - Open the demo notebook and run cells one by one.
-- Check the [API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
+- Check the [API Reference](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md)
 
 ## Installation
 
@@ -60,7 +60,7 @@ See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di
 
 Run Algorithm on top of NebulaGraph:
 
-> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-di/docs/API.md) for more details.
+> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md) for more details.
 
 ```python
 from ngdi import NebulaReader
@@ -112,7 +112,7 @@ Basically the same as Spark Engine, but with `engine="nebula"`.
 
 [Environment Setup](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md)
 
-[API Reference](https://github.com/wey-gu/nebulagraph-di/docs/API.md)
+[API Reference](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md)
 
 ## How it works
 

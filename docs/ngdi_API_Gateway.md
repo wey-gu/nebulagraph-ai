@@ -28,7 +28,15 @@ pdm run ngdi-api
 
 See https://github.com/wey-gu/nebula/tree/ngdi_udf
 
-- Build binary `ngdi.so` file
+### Build binary `ngdi.so` file
+
+Clone the `nebula` repo and checkout the hash of your existing nebulagraph cluster(check with `SHOW HOSTS GRAPH`)
+
+```bash
+git clone https://github.com/vesoft-inc/nebula && cd nebula
+```
+
+Prepare nebula_dev docker container for building UDF.
 
 ```bash
 export TAG=ubuntu2004
@@ -44,6 +52,9 @@ docker run -ti \
 mkdir build && cd build
 cmake -DCMAKE_CXX_COMPILER=$TOOLSET_CLANG_DIR/bin/g++ -DCMAKE_C_COMPILER=$TOOLSET_CLANG_DIR/bin/gcc -DENABLE_WERROR=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=OFF ..
 
+Build the `ngdi.so` file.
+
+```bash
 cd ../udf
 make UDF=ngdi
 ```

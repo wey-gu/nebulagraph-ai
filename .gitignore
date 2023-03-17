@@ -131,3 +131,6 @@ dmypy.json
 
 # pdm
 .pdm.toml
+
+# requirments.txt is only for local development
+requirements.txt

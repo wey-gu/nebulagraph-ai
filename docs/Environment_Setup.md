@@ -41,7 +41,7 @@ Just visit [http://localhost:7001](http://localhost:7001) in your browser, with:
 - user: `root`
 - password: `nebula`
 
-## Rin In Production
+## Run In Production
 
 ### Run on PySpark Jupyter Notebook
 
@@ -98,13 +98,43 @@ pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10)
 Then we can submit the job to Spark cluster:
 
 ```bash
-spark-submit --master spark://master:7077 \
-    --driver-class-path /opt/nebulagraph/ngdi/package/nebula-spark-connector.jar \
-    --driver-class-path /opt/nebulagraph/ngdi/package/nebula-algo.jar \
-    --jars /opt/nebulagraph/ngdi/package/nebula-spark-connector.jar \
-    --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar \
-    --py-files /opt/nebulagraph/ngdi/package/ngdi-py3-env.zip \
+spark-submit --master spark://sparkmaster:7077 \
+    --driver-class-path <hdfs_or_local_path_to>/nebula-spark-connector.jar \
+    --driver-class-path <hdfs_or_local_path_to>/nebula-algo.jar \
+    --jars <hdfs_or_local_path_to>/nebula-spark-connector.jar \
+    --jars <hdfs_or_local_path_to>/nebula-algo.jar \
+    --py-files <hdfs_or_local_path_to>/ngdi-py3-env.zip \
     pagerank.py
+```
+
+## Prepare for py-files
+
+```bash
+pip install pdm
+# prepare dep list in ngdi codebase
+pdm export -o dist/requirements.txt --without-hashes
+# build a wheel for ngdi
+pdm build
+# output it to dependencies
+pip install -r dist/requirements.txt --target dist/dependencies
+pip install . --target dist/dependencies
+# zip dependencies and ngdi wheel
+cd dist
+zip -r ngdi-py3-env.zip dependencies
+# copy ngdi-py3-env.zip to hdfs
+hdfs dfs -put ngdi-py3-env.zip /
+# check it's there
+hdfs dfs -ls /
+```
+
+Now we have all files ready:
+
+```bash
+# hdfs dfs -ls /
+Found 4 items
+-rw-r--r--   3 root supergroup  167042166 2023-03-17 03:54 /nebula-algo.jar
+-rw-r--r--   3 root supergroup  165992037 2023-03-17 03:54 /nebula-spark-connector.jar
+-rw-r--r--   3 root supergroup    5068513 2023-03-17 03:52 /ngdi-py3-env.zip
 ```
 
 ### Run ngdi algorithm PySpark job from python script

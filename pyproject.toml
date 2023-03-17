@@ -5,14 +5,12 @@ ngdi-api = {call = "ngdi.ngdi_api.__main__:run"}
 
 [project]
 name = "ngdi"
-version = "0.2.4"
+version = "0.2.5"
 description = "NebulaGraph Data Intelligence Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
 ]
 dependencies = [
-    "pyspark>=3.2.3",
-    "networkx>=2.5.1",
     "flask>=2.0.3",
 ]
 requires-python = ">=3.6"
@@ -22,3 +20,8 @@ license = {text = "Apache-2.0"}
 [build-system]
 requires = ["pdm-pep517>=1.0"]
 build-backend = "pdm.pep517.api"
+
+[project.optional-dependencies]
+spark = ["pyspark>=3.2.3"]
+networkx = ["networkx>=2.5.1"]
+all = ["ngdi[spark,networkx]"]

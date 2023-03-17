@@ -5,6 +5,33 @@ ngdi API Gateway is a RESTful API server that provides a unified interface for n
 
 With ngdi API Gateway and ngdi UDF, we could call ngdi algorithms from ngql.
 
+## Playground in 5 minutes
+
+```bash
+curl -fsSL nebula-up.siwei.io/all-in-one.sh | bash -s -- v3 spark
+```
+
+> see [Nebula-UP](https://github.com/wey-gu/nebula-up) for more details.
+
+Then load the basketballplayer dataset:
+
+```bash
+~/.nebula-up/load-basketballplayer-dataset.sh
+```
+
+And start ngdi API Gateway from PySpark Jupyter Notebook:
+
+Go to http://localhost:8888, open data_intelligence_suite_nGQL_UDF.ipynb and run the first cell to start the ngdi API Gateway.
+
+Call ngdi from NebulaGraph studio: http://localhost:7001 , **note** the host to login is `ngdi_graphd` `9669`.
+Run query in the console:
+
+```cypher
+RETURN ngdi("pagerank", ["follow"], ["degree"], "spark",
+            {space: "basketballplayer"})
+```
+
+
 ## Calling from ngql
 
 ```cypher

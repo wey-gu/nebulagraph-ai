@@ -44,7 +44,7 @@ def parallel(algo_name):
     space = algo_context.get("space")
     nebula_config = get_nebulagraph_config(space=space)
 
-    reader = NebulaReader(engine="spark")
+    reader = NebulaReader(engine="spark", config=nebula_config)
     # get read_context
     try:
         read_context = data.get("read_context")

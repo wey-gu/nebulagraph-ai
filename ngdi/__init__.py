@@ -11,6 +11,7 @@ from ngdi.nebula_writer import NebulaWriter
 from ngdi.nebula_algo import NebulaAlgorithm
 from ngdi.nebula_gnn import NebulaGNN
 from ngdi.config import NebulaGraphConfig
+from ngdi.ngdi_api.app import app as ngdi_api_app
 
 # export
 __all__ = (
@@ -19,4 +20,5 @@ __all__ = (
     "NebulaAlgorithm",
     "NebulaGNN",
     "NebulaGraphConfig",
+    "ngdi_api_app",
 )

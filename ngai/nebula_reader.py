@@ -2,8 +2,8 @@
 # Copyright 2023 The NebulaGraph Authors. All rights reserved.
 from __future__ import annotations
 
-from ngdi.config import NebulaGraphConfig
-from ngdi.nebula_data import NebulaDataFrameObject
+from ng_ai.config import NebulaGraphConfig
+from ng_ai.nebula_data import NebulaDataFrameObject
 
 
 class NebulaReaderBase(object):
@@ -46,7 +46,7 @@ class NebulaReader:
 class NebulaReaderWithGraph(NebulaReaderBase):
     def __init__(self, config: NebulaGraphConfig, **kwargs):
         super().__init__("nebula", config, **kwargs)
-        from ngdi.engines import NebulaEngine
+        from ng_ai.engines import NebulaEngine
 
         self.engine = NebulaEngine(config)
         self.raw_df = None
@@ -76,7 +76,7 @@ class NebulaReaderWithGraph(NebulaReaderBase):
 class NebulaReaderWithSpark(NebulaReaderBase):
     def __init__(self, config: NebulaGraphConfig, **kwargs):
         super().__init__("spark", config, **kwargs)
-        from ngdi.engines import SparkEngine
+        from ng_ai.engines import SparkEngine
 
         self.engine = SparkEngine(config)
         self.raw_df = None

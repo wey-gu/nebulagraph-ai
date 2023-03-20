@@ -3,19 +3,19 @@
  * This source code is licensed under Apache 2.0 License.
  */
 
-// ngdi is a function to take arguments and call remote ngdi-api functions in thriftrpc:
+// ng_ai is a function to take arguments and call remote ng_ai-api functions in thriftrpc:
 // "127.0.0.1:9999"
 
-#ifndef UDF_NGDI_H
-#define UDF_NGDI_H
+#ifndef UDF_ng_ai_H
+#define UDF_ng_ai_H
 
 #include "../src/common/function/GraphFunction.h"
 
-// Example of a UDF function that calls ngdi-api functions
+// Example of a UDF function that calls ng_ai-api functions
 
-// > YIELD ngdi("pagerank", ["follow"], ["degree"])
+// > YIELD ng_ai("pagerank", ["follow"], ["degree"])
 
-class ngdi : public GraphFunction {
+class ng_ai : public GraphFunction {
  public:
   char *name() override;
 
@@ -31,12 +31,12 @@ class ngdi : public GraphFunction {
 
   nebula::Value body(const std::vector<std::reference_wrapper<const nebula::Value>> &args) override;
 
-  // call_ngdi_api
-  nebula::Value call_ngdi_api(const std::vector<std::reference_wrapper<const nebula::Value>> &args);
+  // call_ng_ai_api
+  nebula::Value call_ng_ai_api(const std::vector<std::reference_wrapper<const nebula::Value>> &args);
   // sendPostRequest
   std::string sendPostRequest(const std::string &url,
                               const std::vector<std::string> &headers,
                               const std::string &body_str);
 };
 
-#endif  // UDF_NGDI_H
+#endif  // UDF_ng_ai_H

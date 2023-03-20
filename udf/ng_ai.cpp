@@ -3,7 +3,7 @@
  * This source code is licensed under Apache 2.0 License.
  */
 
-#include "ngdi.h"
+#include "ng_ai.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -16,19 +16,19 @@
 #include "http_client.h"
 
 extern "C" GraphFunction *create() {
-  return new ngdi;
+  return new ng_ai;
 }
 extern "C" void destroy(GraphFunction *function) {
   delete function;
 }
 
-char *ngdi::name() {
-  const char *name = "ngdi";
+char *ng_ai::name() {
+  const char *name = "ng_ai";
   return const_cast<char *>(name);
 }
 
-std::vector<std::vector<nebula::Value::Type>> ngdi::inputType() {
-  // ngdi("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
+std::vector<std::vector<nebula::Value::Type>> ng_ai::inputType() {
+  // ng_ai("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
   std::vector<nebula::Value::Type> scan_type_pattern_0 = {
       nebula::Value::Type::STRING, nebula::Value::Type::LIST, nebula::Value::Type::LIST};
   std::vector<nebula::Value::Type> scan_type_pattern_1 = {nebula::Value::Type::STRING,
@@ -46,7 +46,7 @@ std::vector<std::vector<nebula::Value::Type>> ngdi::inputType() {
                                                           nebula::Value::Type::STRING,
                                                           nebula::Value::Type::MAP,
                                                           nebula::Value::Type::MAP};
-  // ngdi("pagerank", $-.query, "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
+  // ng_ai("pagerank", $-.query, "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
   std::vector<nebula::Value::Type> query_type_pattern_0 = {nebula::Value::Type::STRING,
                                                            nebula::Value::Type::STRING};
   std::vector<nebula::Value::Type> query_type_pattern_1 = {
@@ -72,25 +72,25 @@ std::vector<std::vector<nebula::Value::Type>> ngdi::inputType() {
   return vvtp;
 }
 
-nebula::Value::Type ngdi::returnType() {
+nebula::Value::Type ng_ai::returnType() {
   return nebula::Value::Type::MAP;
 }
 
-size_t ngdi::minArity() {
+size_t ng_ai::minArity() {
   return 2;
 }
 
-size_t ngdi::maxArity() {
+size_t ng_ai::maxArity() {
   return 6;
 }
 
-bool ngdi::isPure() {
+bool ng_ai::isPure() {
   return true;
 }
 
-nebula::Value ngdi::call_ngdi_api(
+nebula::Value ng_ai::call_ng_ai_api(
     const std::vector<std::reference_wrapper<const nebula::Value>> &args) {
-  // function to make http call to ngdi-api-gateway
+  // function to make http call to ng_ai-api-gateway
   // param:
   //  - read_context, Value::Type::MAP
   //  - write_context, Value::Type::MAP
@@ -191,17 +191,17 @@ nebula::Value ngdi::call_ngdi_api(
     return nebula::Value(response);
   }
   // get base_url from env, if not found set to default: http://jupyter:9999
-  char* _base_url = getenv("ngdi_gateway_url_prefix");
+  char* _base_url = getenv("ng_ai_gateway_url_prefix");
   const char* base_url;
   if (!_base_url) {
-    // std::cout << "The environment variable ngdi_gateway_url_prefix cannot be found.\n"
+    // std::cout << "The environment variable ng_ai_gateway_url_prefix cannot be found.\n"
               //    "Using default:http://jupyter:9999 \n"
               //    "Ensure graphd process comes with it like: \n"
-              //    "export ngdi_gateway_url_prefix=http://jupyter:9999"
+              //    "export ng_ai_gateway_url_prefix=http://jupyter:9999"
               // << std::endl;
     base_url = "http://jupyter:9999";
   } else {
-    // std::cout << "The environment variable ngdi_gateway_url_prefix is found.\n"
+    // std::cout << "The environment variable ng_ai_gateway_url_prefix is found.\n"
                 //  "Using: " << _base_url << std::endl;
     base_url = _base_url;
   }
@@ -210,7 +210,7 @@ nebula::Value ngdi::call_ngdi_api(
   std::string url_prefix;
   url_prefix.append(base_url);
   url_prefix.append("/api/v0/");
-  // call the ngdi api gateway with the url_prefix on /api/v0/{mode}/{algo_name}
+  // call the ng_ai api gateway with the url_prefix on /api/v0/{mode}/{algo_name}
 
   // the body is {"read_context": {read_context}, "write_context": {write_context}, "algo_context":
   // {algo_context}} build the body, body is a hashmap
@@ -243,8 +243,8 @@ nebula::Value ngdi::call_ngdi_api(
   return nebula::Value(response);
 }
 
-  nebula::Value ngdi::body(const std::vector<std::reference_wrapper<const nebula::Value>> &args) {
-    // context MAPs to be passed to ngdi api gateway
+  nebula::Value ng_ai::body(const std::vector<std::reference_wrapper<const nebula::Value>> &args) {
+    // context MAPs to be passed to ng_ai api gateway
     nebula::Map read_context;
     nebula::Map write_context;
     nebula::Map algo_context;
@@ -265,11 +265,11 @@ nebula::Value ngdi::call_ngdi_api(
       return nebula::Value(response);
     } else if (args[1].get().type() == nebula::Value::Type::LIST) {
       // ----------------------------------------------------------
-      // ngdi("pagerank", ["follow"], ["degree"], "spark")
+      // ng_ai("pagerank", ["follow"], ["degree"], "spark")
       //
       // # default algo conf and write conf
       //
-      // ngdi("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
+      // ng_ai("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
       // ----------------------------------------------------------
       // if the second arg is a LIST, its read_mode is "scan"
       // validate:
@@ -297,7 +297,7 @@ nebula::Value ngdi::call_ngdi_api(
         response.kvs.emplace(
             "hint",
             nebula::Value(
-                "ngdi(\"pagerank\", [\"follow\"], [\"degree\"], \"spark\"), or with more arguments"));
+                "ng_ai(\"pagerank\", [\"follow\"], [\"degree\"], \"spark\"), or with more arguments"));
         return nebula::Value(response);
       }
       if (args[2].get().type() != nebula::Value::Type::LIST) {
@@ -364,7 +364,7 @@ nebula::Value ngdi::call_ngdi_api(
       }
       // build the algo_context
 
-      // ngdi("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode:
+      // ng_ai("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode:
       // "insert"}
 
       if (args.size() >= 5) {
@@ -397,8 +397,8 @@ nebula::Value ngdi::call_ngdi_api(
 
     } else if (args[1].get().type() == nebula::Value::Type::STRING) {
       // ----------------------------------------------------------
-      // ngdi("pagerank", $-.query, "spark") # default algo conf and write conf
-      // ngdi("pagerank", $-.query, "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
+      // ng_ai("pagerank", $-.query, "spark") # default algo conf and write conf
+      // ng_ai("pagerank", $-.query, "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
       // ----------------------------------------------------------
       // if the second arg is a STRING, its read_mode is "query"
       // validate it's not empty
@@ -491,7 +491,7 @@ nebula::Value ngdi::call_ngdi_api(
       ref_api_args.emplace_back(std::cref(arg));
     }
 
-    auto response = call_ngdi_api(ref_api_args);
+    auto response = call_ng_ai_api(ref_api_args);
 
     // return the response
     return nebula::Value(response);

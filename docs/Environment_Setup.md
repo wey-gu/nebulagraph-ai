@@ -6,7 +6,7 @@
 - [Run In Production](#in-production)
     - [Run on PySpark Jupyter Notebook](#run-on-pyspark-jupyter-notebook)
     - [Submit Algorithm job to Spark Cluster](#submit-algorithm-job-to-spark-cluster)
-    - [Run ngdi algorithm PySpark job from python script](#run-ngdi-algorithm-pyspark-job-from-python-script)
+    - [Run ng_ai algorithm PySpark job from python script](#run-ng_ai-algorithm-pyspark-job-from-python-script)
     - [Run on single machine with NebulaGraph engine](#run-on-single-machine-with-nebulagraph-engine)
 
 ## With Nebula-UP(qiuck start)
@@ -31,7 +31,7 @@ Just visit [http://localhost:8888](http://localhost:8888) in your browser.
 
 > The default password is `nebula`.
 
-Open data_intelligence_suite_demo.ipynb and run the first cell to install ngdi, then you can run the rest cells.
+Open data_intelligence_suite_demo.ipynb and run the first cell to install ng_ai, then you can run the rest cells.
 
 ### Access to NebulaGraph
 
@@ -45,30 +45,30 @@ Just visit [http://localhost:7001](http://localhost:7001) in your browser, with:
 
 ### Run on PySpark Jupyter Notebook
 
-Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ngdi/package/`.
+Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ng_ai/package/`.
 
 ```bash
 export PYSPARK_PYTHON=python3
 export PYSPARK_DRIVER_PYTHON=jupyter
 export PYSPARK_DRIVER_PYTHON_OPTS="notebook --ip=0.0.0.0 --port=8888 --no-browser"
 
-pyspark --driver-class-path /opt/nebulagraph/ngdi/package/nebula-spark-connector.jar \
-    --driver-class-path /opt/nebulagraph/ngdi/package/nebula-algo.jar \
-    --jars /opt/nebulagraph/ngdi/package/nebula-spark-connector.jar \
-    --jars /opt/nebulagraph/ngdi/package/nebula-algo.jar
+pyspark --driver-class-path /opt/nebulagraph/ng_ai/package/nebula-spark-connector.jar \
+    --driver-class-path /opt/nebulagraph/ng_ai/package/nebula-algo.jar \
+    --jars /opt/nebulagraph/ng_ai/package/nebula-spark-connector.jar \
+    --jars /opt/nebulagraph/ng_ai/package/nebula-algo.jar
 ```
 
-Then we could access Jupyter Notebook with PySpark and refer to [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/spark_engine.ipynb)
+Then we could access Jupyter Notebook with PySpark and refer to [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/spark_engine.ipynb)
 
 ### Submit Algorithm job to Spark Cluster
 
-Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ngdi/package/`;
-We have put the `ngdi-py3-env.zip` in `/opt/nebulagraph/ngdi/package/`.
+Assuming we have put the `nebula-spark-connector.jar` and `nebula-algo.jar` in `/opt/nebulagraph/ng_ai/package/`;
+We have put the `ng_ai-py3-env.zip` in `/opt/nebulagraph/ng_ai/package/`.
 And we have the following Algorithm job in `pagerank.py`:
 
 ```python
-from ngdi import NebulaGraphConfig
-from ngdi import NebulaReader
+from ng_ai import NebulaGraphConfig
+from ng_ai import NebulaReader
 
 # set NebulaGraph config
 config_dict = {
@@ -103,7 +103,7 @@ spark-submit --master spark://sparkmaster:7077 \
     --driver-class-path <hdfs_or_local_path_to>/nebula-algo.jar \
     --jars <hdfs_or_local_path_to>/nebula-spark-connector.jar \
     --jars <hdfs_or_local_path_to>/nebula-algo.jar \
-    --py-files <hdfs_or_local_path_to>/ngdi-py3-env.zip \
+    --py-files <hdfs_or_local_path_to>/ng_ai-py3-env.zip \
     pagerank.py
 ```
 
@@ -111,18 +111,18 @@ spark-submit --master spark://sparkmaster:7077 \
 
 ```bash
 pip install pdm
-# prepare dep list in ngdi codebase
+# prepare dep list in ng_ai codebase
 pdm export -o dist/requirements.txt --without-hashes
-# build a wheel for ngdi
+# build a wheel for ng_ai
 pdm build
 # output it to dependencies
 pip install -r dist/requirements.txt --target dist/dependencies
 pip install . --target dist/dependencies
-# zip dependencies and ngdi wheel
+# zip dependencies and ng_ai wheel
 cd dist
-zip -r ngdi-py3-env.zip dependencies
-# copy ngdi-py3-env.zip to hdfs
-hdfs dfs -put ngdi-py3-env.zip /
+zip -r ng_ai-py3-env.zip dependencies
+# copy ng_ai-py3-env.zip to hdfs
+hdfs dfs -put ng_ai-py3-env.zip /
 # check it's there
 hdfs dfs -ls /
 ```
@@ -134,10 +134,10 @@ Now we have all files ready:
 Found 4 items
 -rw-r--r--   3 root supergroup  167042166 2023-03-17 03:54 /nebula-algo.jar
 -rw-r--r--   3 root supergroup  165992037 2023-03-17 03:54 /nebula-spark-connector.jar
--rw-r--r--   3 root supergroup    5068513 2023-03-17 03:52 /ngdi-py3-env.zip
+-rw-r--r--   3 root supergroup    5068513 2023-03-17 03:52 /ng_ai-py3-env.zip
 ```
 
-### Run ngdi algorithm PySpark job from python script
+### Run ng_ai algorithm PySpark job from python script
 
 We have everything ready as above, including the `pagerank.py`.
 
@@ -145,11 +145,11 @@ We have everything ready as above, including the `pagerank.py`.
 import subprocess
 
 subprocess.run(["spark-submit", "--master", "spark://master:7077",
-                "--driver-class-path", "/opt/nebulagraph/ngdi/package/nebula-spark-connector.jar",
-                "--driver-class-path", "/opt/nebulagraph/ngdi/package/nebula-algo.jar",
-                "--jars", "/opt/nebulagraph/ngdi/package/nebula-spark-connector.jar",
-                "--jars", "/opt/nebulagraph/ngdi/package/nebula-algo.jar",
-                "--py-files", "/opt/nebulagraph/ngdi/package/ngdi-py3-env.zip",
+                "--driver-class-path", "/opt/nebulagraph/ng_ai/package/nebula-spark-connector.jar",
+                "--driver-class-path", "/opt/nebulagraph/ng_ai/package/nebula-algo.jar",
+                "--jars", "/opt/nebulagraph/ng_ai/package/nebula-spark-connector.jar",
+                "--jars", "/opt/nebulagraph/ng_ai/package/nebula-algo.jar",
+                "--py-files", "/opt/nebulagraph/ng_ai/package/ng_ai-py3-env.zip",
                 "pagerank.py"])
 ```
 

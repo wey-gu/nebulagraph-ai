@@ -2,7 +2,7 @@
 # Copyright 2023 The NebulaGraph Authors. All rights reserved.
 from __future__ import annotations
 
-from ngdi.config import NebulaGraphConfig
+from ng_ai.config import NebulaGraphConfig
 
 # SPARK DEFAULTS
 DEFAULT_SHUFFLE_PARTITIONS = 5

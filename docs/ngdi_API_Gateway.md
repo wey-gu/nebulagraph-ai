@@ -1,9 +1,9 @@
 
-# ngdi API Gateway
+# ng_ai API Gateway
 
-ngdi API Gateway is a RESTful API server that provides a unified interface for ngdi algorithms.
+ng_ai API Gateway is a RESTful API server that provides a unified interface for ng_ai algorithms.
 
-With ngdi API Gateway and ngdi UDF, we could call ngdi algorithms from ngql.
+With ng_ai API Gateway and ng_ai UDF, we could call ng_ai algorithms from ngql.
 
 ## Playground in 5 minutes
 
@@ -19,15 +19,15 @@ Then load the basketballplayer dataset:
 ~/.nebula-up/load-basketballplayer-dataset.sh
 ```
 
-And start ngdi API Gateway from PySpark Jupyter Notebook:
+And start ng_ai API Gateway from PySpark Jupyter Notebook:
 
-Go to http://localhost:8888, open data_intelligence_suite_nGQL_UDF.ipynb and run the first cell to start the ngdi API Gateway.
+Go to http://localhost:8888, open data_intelligence_suite_nGQL_UDF.ipynb and run the first cell to start the ng_ai API Gateway.
 
-Call ngdi from NebulaGraph studio: http://localhost:7001 , **note** the host to login is `ngdi_graphd` `9669`.
+Call ng_ai from NebulaGraph studio: http://localhost:7001 , **note** the host to login is `ng_ai_graphd` `9669`.
 Run query in the console:
 
 ```cypher
-RETURN ngdi("pagerank", ["follow"], ["degree"], "spark",
+RETURN ng_ai("pagerank", ["follow"], ["degree"], "spark",
             {space: "basketballplayer"})
 ```
 
@@ -35,27 +35,27 @@ RETURN ngdi("pagerank", ["follow"], ["degree"], "spark",
 ## Calling from ngql
 
 ```cypher
-RETURN ngdi("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
+RETURN ng_ai("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
 ```
 
-## Setup ngdi API Gateway
+## Setup ng_ai API Gateway
 
-For Spark engine, we could run it from the Spark Juptyer Notebook, see: [../examples/ngdi_from_ngql_udf.ipynb](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/ngdi_from_ngql_udf.ipynb)
+For Spark engine, we could run it from the Spark Juptyer Notebook, see: [../examples/ng_ai_from_ngql_udf.ipynb](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/ng_ai_from_ngql_udf.ipynb)
 
-For NetworkX engine, we could run it in same way as it was in Jupyter Notebook, see: [../examples/run_ngdi_api.py](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/run_ngdi_api.py)
+For NetworkX engine, we could run it in same way as it was in Jupyter Notebook, see: [../examples/run_ng_ai_api.py](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/run_ng_ai_api.py)
 
 Or you could call with `pdm`:
 
 ```bash
-export NGDI_PORT=9999
-pdm run ngdi-api
+export ng_ai_PORT=9999
+pdm run ng_ai-api
 ```
 
 ## UDF build
 
-See https://github.com/wey-gu/nebula/tree/ngdi_udf
+See https://github.com/wey-gu/nebula/tree/ng_ai_udf
 
-### Build binary `ngdi.so` file
+### Build binary `ng_ai.so` file
 
 Clone the `nebula` repo and checkout the hash of your existing nebulagraph cluster(check with `SHOW HOSTS GRAPH`)
 
@@ -79,45 +79,45 @@ docker run -ti \
 mkdir build && cd build
 cmake -DCMAKE_CXX_COMPILER=$TOOLSET_CLANG_DIR/bin/g++ -DCMAKE_C_COMPILER=$TOOLSET_CLANG_DIR/bin/gcc -DENABLE_WERROR=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=OFF ..
 
-Build the `ngdi.so` file.
+Build the `ng_ai.so` file.
 
 ```bash
 cd ../udf
-make UDF=ngdi
+make UDF=ng_ai
 ```
 
-## Setup ngdi-graphd
+## Setup ng_ai-graphd
 
-The ngdi-graphd is just a graphd with ngdi UDF installed.
+The ng_ai-graphd is just a graphd with ng_ai UDF installed.
 
-We just need to put the `ngdi.so` file into one path of graphd like `/udf/`, and then set the `--udf_path` to this path together with `--enable_udf=true`.
+We just need to put the `ng_ai.so` file into one path of graphd like `/udf/`, and then set the `--udf_path` to this path together with `--enable_udf=true`.
 
-- Note that the `ngdi.so` file should be built in the same environment as the graphd.
-- The ngdi.so should be granted the `x` permission. (`chmod +x ngdi.so`)
-- The ngdi-api's url should be set in the `ngdi_gateway_url_prefix` environment variable. i.e. `export ngdi_gateway_url_prefix=http://jupyter:9999"`.
+- Note that the `ng_ai.so` file should be built in the same environment as the graphd.
+- The ng_ai.so should be granted the `x` permission. (`chmod +x ng_ai.so`)
+- The ng_ai-api's url should be set in the `ng_ai_gateway_url_prefix` environment variable. i.e. `export ng_ai_gateway_url_prefix=http://jupyter:9999"`.
 
 Example docker compose:
 
 ```yaml
   graphd:
-    image: weygu/ngdi-graphd:2023.03.13
-    container_name: ngdi_graphd
+    image: weygu/ng_ai-graphd:2023.03.13
+    container_name: ng_ai_graphd
     environment:
       USER: root
       TZ:   "${TZ:-Asia/Shanghai}"
-      ngdi_gateway_url_prefix: "http://jupyter:9999"
+      ng_ai_gateway_url_prefix: "http://jupyter:9999"
     command:
       - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
       - --port=9669
-      - --local_ip=ngdi_graphd
-      - --ws_ip=ngdi_graphd
+      - --local_ip=ng_ai_graphd
+      - --ws_ip=ng_ai_graphd
       - --ws_http_port=19669
       - --log_dir=/logs
       - --v=5
       - --enable_udf=true
       - --udf_path=/udf/
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://ngdi_graphd:19669/status"]
+      test: ["CMD", "curl", "-sf", "http://ng_ai_graphd:19669/status"]
       interval: 30s
       timeout: 10s
       retries: 3

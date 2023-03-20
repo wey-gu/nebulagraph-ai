@@ -19,7 +19,7 @@ class NebulaGraphObject:
 
     @property
     def algo(self):
-        from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
 
         return NebulaAlgorithmImpl(self)
 
@@ -81,7 +81,7 @@ class NebulaDataFrameObject:
 
     @property
     def algo(self):
-        from ngdi.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
 
         return NebulaAlgorithmImpl(self)
 

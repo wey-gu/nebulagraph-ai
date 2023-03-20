@@ -13,33 +13,33 @@
 
 ## NebulaGraphConfig
 
-`ngdi.NebulaGraphConfig` is the configuration for `ngdi.NebulaReader`, `ngdi.NebulaWriter` and `ngdi.NebulaAlgorithm`.
+`ng_ai.NebulaGraphConfig` is the configuration for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter` and `ng_ai.NebulaAlgorithm`.
 
-See code for details: [ngdi/config.py](../ngdi/config.py)
+See code for details: [ng_ai/config.py](../ng_ai/config.py)
 
 ## NebulaReader
 
-`ngdi.NebulaReader` reads data from NebulaGraph and constructs `NebulaDataFrameObject` or `NebulaGraphObject`.
+`ng_ai.NebulaReader` reads data from NebulaGraph and constructs `NebulaDataFrameObject` or `NebulaGraphObject`.
 It supports different engines, including Spark and NebulaGraph. The default engine is Spark.
 
-Per each engine, `ngdi.NebulaReader` supports different read modes, including query, scan, and load.
+Per each engine, `ng_ai.NebulaReader` supports different read modes, including query, scan, and load.
 For now, Spark Engine supports query, scan and load modes, while NebulaGraph Engine supports query and scan modes.
 
 In Spark Engine:
 - All modes are underlyingly implemented by NebulaGraph Spark Connector nGQL Reader, while in the future, query mode will be optionally done by opencypher/morpheus to bypass the Nebula-GraphD.
-- The `NebulaDataFrameObject` returned by `ngdi.NebulaReader.read()` is a Spark DataFrame, which can be further processed by Spark SQL or Spark MLlib.
+- The `NebulaDataFrameObject` returned by `ng_ai.NebulaReader.read()` is a Spark DataFrame, which can be further processed by Spark SQL or Spark MLlib.
 
 In NebulaGraph Engine:
 - Query mode is implemented by Python Nebula-GraphD Client, while scan mode the Nebula-StoreageD Client.
-- The `NebulaDataFrameObject` returned by `ngdi.NebulaReader.read()` is a Pandas DataFrame, which can be further processed by Pandas. And the graph returned by ngdi.
+- The `NebulaDataFrameObject` returned by `ng_ai.NebulaReader.read()` is a Pandas DataFrame, which can be further processed by Pandas. And the graph returned by ng_ai.
 
 ### Functions
 
-- `ngdi.NebulaReader.query()` sets the query statement.
-- `ngdi.NebulaReader.scan()` sets the scan statement.
-- `ngdi.NebulaReader.load()` sets the load statement. (not yet implemented)
-- `ngdi.NebulaReader.read()` executes the read operation and returns a DataFrame or `NebulaGraphObject`.
-- `ngdi.NebulaReader.show()` shows the DataFrame returned by `ngdi.NebulaReader.read()`.
+- `ng_ai.NebulaReader.query()` sets the query statement.
+- `ng_ai.NebulaReader.scan()` sets the scan statement.
+- `ng_ai.NebulaReader.load()` sets the load statement. (not yet implemented)
+- `ng_ai.NebulaReader.read()` executes the read operation and returns a DataFrame or `NebulaGraphObject`.
+- `ng_ai.NebulaReader.show()` shows the DataFrame returned by `ng_ai.NebulaReader.read()`.
 
 ### Examples
 
@@ -48,7 +48,7 @@ In NebulaGraph Engine:
 - Scan mode
 
 ```python
-from ngdi import NebulaReader
+from ng_ai import NebulaReader
 # read data with spark engine, scan mode
 reader = NebulaReader(engine="spark")
 reader.scan(edge="follow", props="degree")
@@ -58,7 +58,7 @@ df = reader.read()
 - Query mode
 
 ```python
-from ngdi import NebulaReader
+from ng_ai import NebulaReader
 # read data with spark engine, query mode
 reader = NebulaReader(engine="spark")
 query = """
@@ -83,37 +83,37 @@ df.show(10)
 
 ## engines
 
-- `ngdi.engines.SparkEngine` is the Spark Engine for `ngdi.NebulaReader`, `ngdi.NebulaWriter` and `ngdi.NebulaAlgorithm`.
+- `ng_ai.engines.SparkEngine` is the Spark Engine for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter` and `ng_ai.NebulaAlgorithm`.
 
-- `ngdi.engines.NebulaEngine` is the NebulaGraph Engine for `ngdi.NebulaReader`, `ngdi.NebulaWriter`.
+- `ng_ai.engines.NebulaEngine` is the NebulaGraph Engine for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter`.
 
-- `ngdi.engines.NetworkXEngine` is the NetworkX Engine for `ngdi.NebulaAlgorithm`.
+- `ng_ai.engines.NetworkXEngine` is the NetworkX Engine for `ng_ai.NebulaAlgorithm`.
 
 ## `NebulaDataFrameObject`
 
-ngdi.`NebulaDataFrameObject` is a Spark DataFrame or Pandas DataFrame, which can be further processed by Spark SQL or Spark MLlib or Pandas.
+ng_ai.`NebulaDataFrameObject` is a Spark DataFrame or Pandas DataFrame, which can be further processed by Spark SQL or Spark MLlib or Pandas.
 
 ### Functions
 
-- `ngdi.NebulaDataFrameObject.algo.pagerank()` runs the PageRank algorithm on the Spark DataFrame.
-- `ngdi.NebulaDataFrameObject.to_graphx()` converts the DataFrame to a GraphX Graph. not yet implemented.
+- `ng_ai.NebulaDataFrameObject.algo.pagerank()` runs the PageRank algorithm on the Spark DataFrame.
+- `ng_ai.NebulaDataFrameObject.to_graphx()` converts the DataFrame to a GraphX Graph. not yet implemented.
 
 ## NebulaGraphObject
 
-`ngdi.NebulaGraphObject` is a GraphX Graph or NetworkX Graph, which can be further processed by GraphX or NetworkX.
+`ng_ai.NebulaGraphObject` is a GraphX Graph or NetworkX Graph, which can be further processed by GraphX or NetworkX.
 
 ### Functions
 
-- `ngdi.NebulaGraphObject.algo.get_all_algo()` returns all algorithms supported by the engine.
-- `ngdi.NebulaGraphObject.algo.pagerank()` runs the PageRank algorithm on the NetworkX Graph. not yet implemented.
+- `ng_ai.NebulaGraphObject.algo.get_all_algo()` returns all algorithms supported by the engine.
+- `ng_ai.NebulaGraphObject.algo.pagerank()` runs the PageRank algorithm on the NetworkX Graph. not yet implemented.
 
 ## NebulaAlgorithm
 
-`ngdi.NebulaAlgorithm` is a collection of algorithms that can be run on ngdi.`NebulaDataFrameObject`(spark engine) or `ngdi.NebulaGraphObject`(networkx engine).
+`ng_ai.NebulaAlgorithm` is a collection of algorithms that can be run on ng_ai.`NebulaDataFrameObject`(spark engine) or `ng_ai.NebulaGraphObject`(networkx engine).
 
 ## NebulaWriter
 
-`ngdi.NebulaWriter` writes the computed or queried data to different sinks.
+`ng_ai.NebulaWriter` writes the computed or queried data to different sinks.
 Supported sinks include:
 - NebulaGraph(Spark Engine, NebulaGraph Engine)
 - CSV(Spark Engine, NebulaGraph Engine)
@@ -121,9 +121,9 @@ Supported sinks include:
 
 ### Functions
 
-- `ngdi.NebulaWriter.options()` sets the options for the sink.
-- `ngdi.NebulaWriter.write()` writes the data to the sink.
-- `ngdi.NebulaWriter.show_options()` shows the options for the sink.
+- `ng_ai.NebulaWriter.options()` sets the options for the sink.
+- `ng_ai.NebulaWriter.write()` writes the data to the sink.
+- `ng_ai.NebulaWriter.show_options()` shows the options for the sink.
 
 ### Examples
 
@@ -152,8 +152,8 @@ CREATE TAG IF NOT EXISTS louvain (
 Then, we could write the louvain result to NebulaGraph, map the column `louvain` to `cluster_id` with the following code:
 
 ```python
-from ngdi import NebulaWriter
-from ngdi.config import NebulaGraphConfig
+from ng_ai import NebulaWriter
+from ng_ai.config import NebulaGraphConfig
 
 config = NebulaGraphConfig()
 
@@ -182,4 +182,4 @@ RETURN id(v), v.louvain.cluster_id LIMIT 10;
 
 ## NebulaGNN
 
-`ngdi.NebulaGNN` is a collection of graph neural network models that can be run on ngdi. not yet implemented.
+`ng_ai.NebulaGNN` is a collection of graph neural network models that can be run on ng_ai. not yet implemented.

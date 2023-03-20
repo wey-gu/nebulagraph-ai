@@ -6,12 +6,12 @@ from pkgutil import extend_path
 
 __path__ = extend_path(__path__, __name__)  # type: ignore
 
-from ngdi.nebula_reader import NebulaReader
-from ngdi.nebula_writer import NebulaWriter
-from ngdi.nebula_algo import NebulaAlgorithm
-from ngdi.nebula_gnn import NebulaGNN
-from ngdi.config import NebulaGraphConfig
-from ngdi.ngdi_api.app import app as ngdi_api_app
+from ng_ai.nebula_reader import NebulaReader
+from ng_ai.nebula_writer import NebulaWriter
+from ng_ai.nebula_algo import NebulaAlgorithm
+from ng_ai.nebula_gnn import NebulaGNN
+from ng_ai.config import NebulaGraphConfig
+from ng_ai.ng_ai_api.app import app as ng_ai_api_app
 
 # export
 __all__ = (
@@ -20,5 +20,5 @@ __all__ = (
     "NebulaAlgorithm",
     "NebulaGNN",
     "NebulaGraphConfig",
-    "ngdi_api_app",
+    "ng_ai_api_app",
 )

@@ -1,7 +1,7 @@
 import os
 
-from ngdi import NebulaReader, NebulaWriter
-from ngdi.config import NebulaGraphConfig
+from ng_ai import NebulaReader, NebulaWriter
+from ng_ai.config import NebulaGraphConfig
 
 from flask import Flask, request
 
@@ -56,7 +56,7 @@ def parallel(algo_name):
             len(edges) == len(edge_weights) and len(edges) > 0
         ), "edges and edge_weights should have the same length and length > 0"
         # TBD, it seems that the reader.scan() need to support more than one edge type
-        # https://github.com/wey-gu/nebulagraph-di/issues/19
+        # https://github.com/wey-gu/nebulagraph-ai/issues/19
         # need to query all and union them.
         if read_mode == "scan":
             reader.scan(edge=edges[0], props=edge_weights[0])

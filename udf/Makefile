@@ -16,7 +16,7 @@ endif
 CXX := g++
 CXX_FLAGS := -std=c++17 -c -I ../src/ -I $(3PP_PATH)/include/ -fPIC -static-libstdc++
 LIBS := -L$(3PP_PATH)/lib -static-libstdc++ -lglog -lgflags -Wl,-rpath=$(3PP_PATH)/lib -lcurl
-UDF ?= ngdi
+UDF ?= ng_ai
 
 all: $(UDF).cpp
 	$(CXX) $(CXX_FLAGS) $(UDF).cpp -o $(UDF).o
@@ -30,4 +30,4 @@ clean:
 .PHONY: help
 help:
 	@echo "Usage: make UDF=<udf_name>"
-	@echo "Example: make UDF=ngdi"
+	@echo "Example: make UDF=ng_ai"

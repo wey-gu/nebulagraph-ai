@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from ngdi.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
-from ngdi.nebula_data import NebulaDataFrameObject as NebulaDataFrameObjectImpl
+from ng_ai.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
+from ng_ai.nebula_data import NebulaDataFrameObject as NebulaDataFrameObjectImpl
 
 
 def algo(func):

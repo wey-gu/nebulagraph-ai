@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
-  <img alt="NebulaGraph Data Intelligence Suite(ngdi)" src="https://user-images.githubusercontent.com/1651790/226242840-093b7202-2423-471e-96b8-325111197eb8.png">
+  <img alt="NebulaGraph Data Intelligence Suite(ng_ai)" src="https://user-images.githubusercontent.com/1651790/226242840-093b7202-2423-471e-96b8-325111197eb8.png">
 </picture>
 
 <p align="center">
@@ -12,8 +12,8 @@
     <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License">
 </a>
 
-<a href="https://badge.fury.io/py/ngdi" target="_blank">
-    <img src="https://badge.fury.io/py/ngdi.svg" alt="PyPI version">
+<a href="https://badge.fury.io/py/ng_ai" target="_blank">
+    <img src="https://badge.fury.io/py/ng_ai.svg" alt="PyPI version">
 </a>
 
 <a href="https://www.python.org/downloads/release/python-360/" target="_blank">
@@ -28,51 +28,51 @@
 
 ---
 
-**Documentation**: <a href="https://github.com/wey-gu/nebulagraph-di#documentation" target="_blank">https://github.com/wey-gu/nebulagraph-di#documentation</a>
+**Documentation**: <a href="https://github.com/wey-gu/nebulagraph-ai#documentation" target="_blank">https://github.com/wey-gu/nebulagraph-ai#documentation</a>
 
-**Source Code**: <a href="https://github.com/wey-gu/nebulagraph-di" target="_blank">https://github.com/wey-gu/nebulagraph-di</a>
+**Source Code**: <a href="https://github.com/wey-gu/nebulagraph-ai" target="_blank">https://github.com/wey-gu/nebulagraph-ai</a>
 
 ---
 
 
-NebulaGraph AI Suite for Python (ngdi) is a powerful Python library that offers APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph.
+NebulaGraph AI Suite for Python (ng_ai) is a powerful Python library that offers APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph.
 
 With the support of single-machine engine(NetworkX), or distributed computing environment using Spark we could perform Graph Analysis and Algorithms on top of NebulaGraph in less than 10 lines of code, in unified and intuitive API.
 
 ## Quick Start in 5 Minutes
 
-- Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md).
-- Install ngdi with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
+- Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/Environment_Setup.md).
+- Install ng_ai with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
 - Open the demo notebook and run cells one by one.
-- Check the [API Reference](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md)
+- Check the [API Reference](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md)
 
 ## Installation
 
 ```bash
-pip install ngdi
+pip install ng_ai
 ```
 
 ## Usage
 
 ### Call from nGQL
 
-See more details in [docs](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/ngdi_API_Gateway.md)
+See more details in [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/ng_ai_API_Gateway.md)
 
 ```cypher
-RETURN ngdi("pagerank", ["follow"], ["degree"], "spark",
+RETURN ng_ai("pagerank", ["follow"], ["degree"], "spark",
     {space: "basketballplayer", max_iter: 10}, {write_mode: "insert"})
 ```
 
 ### Spark Engine Examples
 
-See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/spark_engine.ipynb)
+See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/spark_engine.ipynb)
 
 Run Algorithm on top of NebulaGraph:
 
-> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-di/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md) for more details.
+> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md) for more details.
 
 ```python
-from ngdi import NebulaReader
+from ng_ai import NebulaReader
 
 # read data with spark engine, scan mode
 reader = NebulaReader(engine="spark")
@@ -86,8 +86,8 @@ pr_result = df.algo.pagerank(reset_prob=0.15, max_iter=10)
 Write back to NebulaGraph:
 
 ```python
-from ngdi import NebulaWriter
-from ngdi.config import NebulaGraphConfig
+from ng_ai import NebulaWriter
+from ng_ai.config import NebulaGraphConfig
 
 config = NebulaGraphConfig()
 
@@ -119,13 +119,13 @@ Basically the same as Spark Engine, but with `engine="nebula"`.
 
 ## Documentation
 
-[Environment Setup](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/Environment_Setup.md)
+[Environment Setup](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/Environment_Setup.md)
 
-[API Reference](https://github.com/wey-gu/nebulagraph-di/blob/main/docs/API.md)
+[API Reference](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md)
 
 ## How it works
 
-ngdi is an unified abstraction layer for different engines, the current implementation is based on Spark, NetworkX, DGL and NebulaGraph, but it's easy to extend to other engines like Flink, GraphScope, PyG etc.
+ng_ai is an unified abstraction layer for different engines, the current implementation is based on Spark, NetworkX, DGL and NebulaGraph, but it's easy to extend to other engines like Flink, GraphScope, PyG etc.
 
 ```
           ┌───────────────────────────────────────────────────┐
@@ -139,7 +139,7 @@ ngdi is an unified abstraction layer for different engines, the current implemen
     Engine└───────────────────────────────────────────────────┘
        │  ┌────────────────────────────────────────────────────┬──────────┐
        └──┤                                                    │          │
-          │   NebulaGraph Data Intelligence Suite(ngdi)        │ ngdi-api │◀─┐
+          │   NebulaGraph Data Intelligence Suite(ngai)        │ ngai-api │◀─┐
           │                                                    │          │  │
           │                                                    └──────────┤  │
           │     ┌────────┐    ┌──────┐    ┌────────┐   ┌─────┐            │  │
@@ -157,9 +157,9 @@ ngdi is an unified abstraction layer for different engines, the current implemen
  │  Spark                   Query Mode           │                           │
  │  Reader                                       │                           │
  │Scan Mode                                      ▼                      ┌─────────┐
- │     │  ┌───────────────────────────────────────────────────┬─────────┤ ngdi-udf│◀─────────────┐
+ │     │  ┌───────────────────────────────────────────────────┬─────────┤ ngai-udf│◀─────────────┐
  │     │  │                                                   │         └─────────┤              │
- │     │  │  NebulaGraph Graph Engine         Nebula-GraphD   │   ngdi-GraphD     │              │
+ │     │  │  NebulaGraph Graph Engine         Nebula-GraphD   │   ngai-GraphD     │              │
  │     │  ├──────────────────────────────┬────────────────────┼───────────────────┘              │
  │     │  │                              │                    │                                  │
  │     │  │  NebulaGraph Storage Engine  │                    │                                  │
@@ -169,10 +169,10 @@ ngdi is an unified abstraction layer for different engines, the current implemen
  │        └──────────────────────────────┴────────────────────┘                                  │
  │                                                                                               │
  │    ┌───────────────────────────────────────────────────────────────────────────────────────┐  │
- │    │ RETURN ngdi("pagerank", ["follow"], ["degree"], "spark", {space: "basketballplayer"}) │──┘
+ │    │ RETURN ng_ai("pagerank", ["follow"], ["degree"], "spark", {space:"basketballplayer"}) │──┘
  │    └───────────────────────────────────────────────────────────────────────────────────────┘
  │  ┌─────────────────────────────────────────────────────────────┐
- │  │ from ngdi import NebulaReader                               │
+ │  │ from ng_ai import NebulaReader                              │
  │  │                                                             │
  │  │ # read data with spark engine, scan mode                    │
  │  │ reader = NebulaReader(engine="spark")                       │

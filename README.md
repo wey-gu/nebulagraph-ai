@@ -1,7 +1,4 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
-  <img alt="NebulaGraph Data Intelligence Suite(ng_ai)" src="https://user-images.githubusercontent.com/1651790/226242840-093b7202-2423-471e-96b8-325111197eb8.png">
-</picture>
+<img alt="NebulaGraph Data Intelligence Suite(ng_ai)" src="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
 
 <p align="center">
     <em>NebulaGraph AI Suite with 4 line code to run Graph Algo on NebulaGraph</em>

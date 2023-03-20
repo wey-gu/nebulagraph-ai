@@ -5,7 +5,7 @@ ng_ai-api = {call = "ng_ai.ng_ai_api.__main__:run"}
 
 [project]
 name = "ng_ai"
-version = "0.2.7"
+version = "0.2.9.1"
 description = "NebulaGraph Data Intelligence Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},

@@ -1,10 +1,10 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/1651790/221885742-80a9ba15-55f5-40df-80cb-934e60c02665.png">
-  <img alt="NebulaGraph Data Intelligence Suite(ngdi)" src="https://user-images.githubusercontent.com/1651790/221876073-61ef4edb-adcd-4f10-b3fc-8ddc24918ea1.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
+  <img alt="NebulaGraph Data Intelligence Suite(ngdi)" src="https://user-images.githubusercontent.com/1651790/226242840-093b7202-2423-471e-96b8-325111197eb8.png">
 </picture>
 
 <p align="center">
-    <em>Data Intelligence Suite with 4 line code to run Graph Algo on NebulaGraph</em>
+    <em>NebulaGraph AI Suite with 4 line code to run Graph Algo on NebulaGraph</em>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@
 ---
 
 
-NebulaGraph Data Intelligence Suite for Python (ngdi) is a powerful Python library that offers APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph.
+NebulaGraph AI Suite for Python (ngdi) is a powerful Python library that offers APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph.
 
 With the support of single-machine engine(NetworkX), or distributed computing environment using Spark we could perform Graph Analysis and Algorithms on top of NebulaGraph in less than 10 lines of code, in unified and intuitive API.
 

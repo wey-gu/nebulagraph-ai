@@ -2,8 +2,6 @@
 # Copyright 2023 The NebulaGraph Authors. All rights reserved.
 from __future__ import annotations
 
-from ng_ai.config import NebulaGraphConfig
-
 # SPARK DEFAULTS
 DEFAULT_SHUFFLE_PARTITIONS = 5
 DEFAULT_EXECUTOR_MEMORY = "8g"
@@ -58,7 +56,8 @@ class SparkEngine(BaseEngine):
         self.prepare()
         self.nebula_spark_ds = NEBULA_SPARK_CONNECTOR_DATASOURCE
 
-        # TBD: ping NebulaGraph Meta and Storage Server, fail and guide user to check config
+        # TBD: ping NebulaGraph Meta and Storage Server
+        # fail and guide user to check config
 
     def __str__(self):
         return f"SparkEngine: {self.spark}"
@@ -91,7 +90,9 @@ class SparkEngine(BaseEngine):
 
         # scala:
         # import "com.vesoft.nebula.algorithm.config.SparkConfig"
-        java_import(self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig")
+        java_import(
+            self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig"
+        )
         return java_import
 
     def import_scala_class(self, class_name):

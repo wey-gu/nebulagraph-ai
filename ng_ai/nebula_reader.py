@@ -29,7 +29,10 @@ class NebulaReaderBase(object):
 
 class NebulaReader:
     def __init__(
-        self, engine="spark", config: NebulaGraphConfig = NebulaGraphConfig(), **kwargs
+        self,
+        engine="spark",
+        config: NebulaGraphConfig = NebulaGraphConfig(),
+        **kwargs,
     ):
         self.engine_type = engine
         if self.engine_type == "spark":

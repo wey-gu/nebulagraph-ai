@@ -1,6 +1,6 @@
-from ng_ai import ng_ai_api_app as app
-
 import os
+
+from ng_ai import ng_ai_api_app as app
 
 
 def run():

@@ -193,6 +193,21 @@ ng_ai is an unified abstraction layer for different engines, the current impleme
 - [NebulaGraph Python Client 3.4+](https://github.com/vesoft-inc/nebula-python)
 - [NetworkX](https://networkx.org/)
 
+
+## Contributing
+
+```bash
+pip3 install pdm
+# build and install ng_ai
+pdm install
+# run tests
+pdm run test
+# lint
+pdm run lint
+# format
+pdm run format
+```
+
 ## License
 
 This project is licensed under the terms of the Apache License 2.0.

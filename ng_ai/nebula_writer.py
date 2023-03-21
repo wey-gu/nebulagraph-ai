@@ -83,7 +83,8 @@ class NebulaWriterWithSpark(NebulaWriterBase):
     def _convert_java_object_to_spark_df(self, jdf, column_map: dict = {}):
         """
         Convert JavaObject to Spark DataFrame, with column name mapping
-        ref: https://stackoverflow.com/questions/36023860/how-to-use-a-scala-class-inside-pyspark
+        ref: https://stackoverflow.com/
+             questions/36023860/how-to-use-a-scala-class-inside-pyspark
         """
         from pyspark.sql import DataFrame
 
@@ -132,7 +133,8 @@ class NebulaWriterWithSpark(NebulaWriterBase):
         writer.option("type", type)
         self._options["type"] = type
 
-        # space setting, set only when it's specified, else inherit from NebulaGraphConfig
+        # space setting, set only when it's specified, else inherit
+        # from NebulaGraphConfig
         space = kwargs.get("space", self.config.space)
         assert space is not None, "space should be specified"
         writer.option("spaceName", space)
@@ -218,7 +220,7 @@ class NebulaWriterWithSpark(NebulaWriterBase):
                 "",
                 "hash",
                 "uuid",
-            ], f"src_id_policy should be empty, hash or uuid, but got {src_id_policy}"
+            ], f"id_policy valid value: [empty, hash, uuid], got {src_id_policy}"
             writer.option("srcIdPolicy", src_id_policy)
             self._options["srcIdPolicy"] = src_id_policy
 
@@ -228,7 +230,7 @@ class NebulaWriterWithSpark(NebulaWriterBase):
                 "",
                 "hash",
                 "uuid",
-            ], f"dst_id_policy should be empty, hash or uuid, but got {dst_id_policy}"
+            ], f"id_policy valid value: [empty, hash, uuid], got {dst_id_policy}"
             writer.option("dstIdPolicy", dst_id_policy)
             self._options["dstIdPolicy"] = dst_id_policy
 
@@ -256,8 +258,10 @@ class NebulaWriterWithSpark(NebulaWriterBase):
         #     cluster_id string NOT NULL
         # );
 
-        louvain_result_df = louvain_result_df.withColumnRenamed("louvain", "cluster_id")
-        louvain_result_df.write.format("com.vesoft.nebula.connector.NebulaDataSource").option(
+        louvain_result_df = louvain_result_df.withColumnRenamed(
+            "louvain", "cluster_id")
+        louvain_result_df.write.format(
+                "com.vesoft.nebula.connector.NebulaDataSource").option(
             "type", "vertex").option(
             "spaceName", "basketballplayer").option(
             "label", "louvain").option(
@@ -276,7 +280,8 @@ class NebulaWriterWithSpark(NebulaWriterBase):
             self.raw_df = self._convert_java_object_to_spark_df(
                 self.jdf, kwargs.get("properties", {})
             )
-        # TBD: check tag/edge type's schema against df's schema, raise error if not match
+        # TBD: check tag/edge type's schema against df's schema,
+        #      raise error if not match
 
         self._get_raw_df_writer()  # self.raw_df_writer
 

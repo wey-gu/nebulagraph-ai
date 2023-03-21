@@ -114,7 +114,7 @@ class NebulaDataFrameObject:
 
     def to_graphx(self):
         if self.engine.type == "spark":
-            df = self.data
+            df = self.data  # noqa: F841
             # convert the df to a graphx graph, not implemented now
             raise NotImplementedError
         else:

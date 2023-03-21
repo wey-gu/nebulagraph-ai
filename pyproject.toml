@@ -3,9 +3,58 @@
 [tool.pdm.scripts]
 ng_ai-api = {call = "ng_ai.ng_ai_api.__main__:run"}
 
+[tool.pdm.scripts.test]
+shell = """
+    pdm update -dG dev
+    pytest
+"""
+
+[tool.pdm.scripts.lint]
+shell = """
+    pdm update -dG lint
+    flake8 --max-line-length=84 ng_ai tests
+    isort --check ng_ai tests --diff
+    black --line-length 84 --check ng_ai tests --diff
+"""
+
+[tool.pdm.scripts.format]
+shell = """
+    pdm update -dG lint
+    isort ng_ai tests
+    black --line-length 84 ng_ai tests
+"""
+
+[tool.black]
+line-length = 84
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+atomic = true
+skip_glob = ["*/setup.py"]
+filter_files = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.2.2",
+]
+
 [project]
 name = "ng_ai"
-version = "0.2.9.1"
+version = "0.2.9.2"
 description = "NebulaGraph Data Intelligence Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
@@ -14,7 +63,8 @@ dependencies = [
     "flask>=2.0.3",
     "networkx>=2.5.1",
 ]
-requires-python = ">=3.6"
+# pyspark for unit test cannot work with python 3.10
+requires-python = ">=3.7,<3.10"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 
@@ -26,3 +76,13 @@ build-backend = "pdm.pep517.api"
 spark = ["pyspark>=3.2.3"]
 networkx = ["networkx>=2.5.1"]
 all = ["ng_ai[spark,networkx]"]
+lint = [
+    "flake8>=4.0.1",
+    "black>=23.1.0",
+    "isort>=5.11.5",
+]
+test = [
+    "pytest>=7.2.2",
+    "chispa"
+]
+dev = ["ng_ai[all,lint,test]"]

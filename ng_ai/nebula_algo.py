@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-from ng_ai.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
 from ng_ai.nebula_data import NebulaDataFrameObject as NebulaDataFrameObjectImpl
+from ng_ai.nebula_data import NebulaGraphObject as NebulaGraphObjectImpl
 
 
 def algo(func):
@@ -53,13 +53,14 @@ class NebulaDataFrameAlgorithm:
     def check_engine(self):
         """
         Check if the engine is supported.
-        For netowrkx, we need to convert the NebulaDataFrameObject to NebulaGraphObject
+        For netowrkx, we need to convert the NebulaDataFrameObject
+            to NebulaGraphObject
         For spark, we can directly use the NebulaDataFrameObject
         """
         if self.ndf_obj.engine.type == "networkx":
             raise Exception(
                 "For NebulaDataFrameObject in networkx engine,"
-                "Please transform it to NebulaGraphObject to run algorithm",
+                "Plz transform it to NebulaGraphObject to run algorithm",
                 "For example: g = nebula_df.to_graph; g.algo.pagerank()",
             )
 
@@ -73,7 +74,7 @@ class NebulaDataFrameAlgorithm:
         jspark = engine.jspark
         engine.import_algo_config_class(config_class)
         engine.import_algo_lib_class(lib_class)
-        return engine, spark, jspark, engine.encode_vertex_id
+        return engine, spark, jspark, engine.encode_vid
 
     def get_spark_dataframe(self):
         """
@@ -93,22 +94,22 @@ class NebulaDataFrameAlgorithm:
     def pagerank(
         self, reset_prob: float = 0.15, max_iter: int = 10, weighted: bool = False
     ):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "PRConfig", "PageRankAlgo"
         )
         df = self.get_spark_dataframe()
-        config = spark._jvm.PRConfig(max_iter, reset_prob, encode_vertex_id)
+        config = spark._jvm.PRConfig(max_iter, reset_prob, encode_vid)
         result = spark._jvm.PageRankAlgo.apply(jspark, df._jdf, config, weighted)
 
         return result
 
     @algo
     def connected_components(self, max_iter: int = 10, weighted: bool = False):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "CcConfig", "ConnectedComponentsAlgo"
         )
         df = self.get_spark_dataframe()
-        config = spark._jvm.CcConfig(max_iter, encode_vertex_id)
+        config = spark._jvm.CcConfig(max_iter, encode_vid)
         result = spark._jvm.ConnectedComponentsAlgo.apply(
             jspark, df._jdf, config, weighted
         )
@@ -117,12 +118,12 @@ class NebulaDataFrameAlgorithm:
 
     @algo
     def label_propagation(self, max_iter: int = 10, weighted: bool = False):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "LPAConfig", "LabelPropagationAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.LPAConfig(max_iter, encode_vertex_id)
+        config = spark._jvm.LPAConfig(max_iter, encode_vid)
         result = spark._jvm.LabelPropagationAlgo.apply(
             jspark, df._jdf, config, weighted
         )
@@ -131,49 +132,50 @@ class NebulaDataFrameAlgorithm:
 
     @algo
     def louvain(self, max_iter: int = 20, internalIter: int = 10, tol: float = 0.5):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "LouvainConfig", "LouvainAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.LouvainConfig(max_iter, internalIter, tol, encode_vertex_id)
+        config = spark._jvm.LouvainConfig(max_iter, internalIter, tol, encode_vid)
         result = spark._jvm.LouvainAlgo.apply(jspark, df._jdf, config, False)
 
         return result
 
     @algo
     def k_core(self, max_iter: int = 10, degree: int = 2):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "KCoreConfig", "KCoreAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.KCoreConfig(max_iter, degree, encode_vertex_id)
+        config = spark._jvm.KCoreConfig(max_iter, degree, encode_vid)
 
         result = spark._jvm.KCoreAlgo.apply(jspark, df._jdf, config)
 
         return result
 
     # def shortest_path(self, landmarks: list, weighted: bool = False):
-    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #     engine, spark, jspark, encode_vid = self.get_spark_engine_context(
     #         "ShortestPathConfig", "ShortestPathAlgo"
     #     )
     #     # TBD: ShortestPathAlgo is not yet encodeID compatible
     #     df = self.get_spark_dataframe()
 
-    #     config = spark._jvm.ShortestPathConfig(landmarks, encode_vertex_id)
-    #     result = spark._jvm.ShortestPathAlgo.apply(jspark, df._jdf, config, weighted)
+    #     config = spark._jvm.ShortestPathConfig(landmarks, encode_vid)
+    #     result = spark._jvm.ShortestPathAlgo.apply(
+    #         jspark, df._jdf, config, weighted)
 
     #     return result
 
     @algo
     def degree_statics(self):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "DegreeStaticConfig", "DegreeStaticAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.DegreeStaticConfig(encode_vertex_id)
+        config = spark._jvm.DegreeStaticConfig(encode_vid)
         result = spark._jvm.DegreeStaticAlgo.apply(jspark, df._jdf, config)
 
         return result
@@ -182,12 +184,12 @@ class NebulaDataFrameAlgorithm:
     def betweenness_centrality(
         self, max_iter: int = 10, degree: int = 2, weighted: bool = False
     ):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "BetweennessConfig", "BetweennessCentralityAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.BetweennessConfig(max_iter, encode_vertex_id)
+        config = spark._jvm.BetweennessConfig(max_iter, encode_vid)
         result = spark._jvm.BetweennessCentralityAlgo.apply(
             jspark, df._jdf, config, weighted
         )
@@ -201,24 +203,24 @@ class NebulaDataFrameAlgorithm:
             "type should be either local or global"
             f"in coefficient_centrality algo. Got type: {type}"
         )
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "CoefficientConfig", "ClusteringCoefficientAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.CoefficientConfig(type, encode_vertex_id)
+        config = spark._jvm.CoefficientConfig(type, encode_vid)
         result = spark._jvm.ClusteringCoefficientAlgo.apply(jspark, df._jdf, config)
 
         return result
 
     @algo
     def bfs(self, max_depth: int = 10, root: int = 1):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "BfsConfig", "BfsAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.BfsConfig(max_depth, root, encode_vertex_id)
+        config = spark._jvm.BfsConfig(max_depth, root, encode_vid)
         result = spark._jvm.BfsAlgo.apply(jspark, df._jdf, config)
 
         return result
@@ -226,12 +228,12 @@ class NebulaDataFrameAlgorithm:
     # dfs is not yet supported, need to revisit upstream nebula-algorithm
     @algo
     def dfs(self, max_depth: int = 10, root: int = 1):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "DfsConfig", "DfsAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.DfsConfig(max_depth, root, encode_vertex_id)
+        config = spark._jvm.DfsConfig(max_depth, root, encode_vid)
         result = spark._jvm.DfsAlgo.apply(jspark, df._jdf, config)
 
         return result
@@ -245,13 +247,13 @@ class NebulaDataFrameAlgorithm:
         weighted: bool = False,
         preferences=None,
     ):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "HanpConfig", "HanpAlgo"
         )
         df = self.get_spark_dataframe()
 
         config = spark._jvm.HanpConfig(
-            hop_attenuation, max_iter, preference, encode_vertex_id
+            hop_attenuation, max_iter, preference, encode_vid
         )
         result = spark._jvm.HanpAlgo.apply(
             jspark, df._jdf, config, weighted, preferences
@@ -278,7 +280,7 @@ class NebulaDataFrameAlgorithm:
     #     model_path: str = "hdfs://127.0.0.1:9000/model",
     #     weighted: bool = False,
     # ):
-    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #     engine, spark, jspark, encode_vid = self.get_spark_engine_context(
     #         "Node2vecConfig", "Node2VecAlgo"
     #     )
     #     # TBD: Node2VecAlgo is not yet encodeID compatible
@@ -298,7 +300,7 @@ class NebulaDataFrameAlgorithm:
     #         degree,
     #         emb_separator,
     #         model_path,
-    #         encode_vertex_id,
+    #         encode_vid,
     #     )
     #     result = spark._jvm.Node2VecAlgo.apply(jspark, df._jdf, config, weighted)
 
@@ -306,23 +308,25 @@ class NebulaDataFrameAlgorithm:
 
     @algo
     def jaccard(self, tol: float = 1.0):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "JaccardConfig", "JaccardAlgo"
         )
         df = self.get_spark_dataframe()
 
-        config = spark._jvm.JaccardConfig(tol, encode_vertex_id)
+        config = spark._jvm.JaccardConfig(tol, encode_vid)
         result = spark._jvm.JaccardAlgo.apply(jspark, df._jdf, config)
 
         return result
 
     @algo
-    def strong_connected_components(self, max_iter: int = 10, weighted: bool = False):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    def strong_connected_components(
+        self, max_iter: int = 10, weighted: bool = False
+    ):
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "CcConfig", "StronglyConnectedComponentsAlgo"
         )
         df = self.get_spark_dataframe()
-        config = spark._jvm.CcConfig(max_iter, encode_vertex_id)
+        config = spark._jvm.CcConfig(max_iter, encode_vid)
         result = spark._jvm.StronglyConnectedComponentsAlgo.apply(
             jspark, df._jdf, config, weighted
         )
@@ -331,11 +335,11 @@ class NebulaDataFrameAlgorithm:
 
     @algo
     def triangle_count(self):
-        engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+        engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "TriangleConfig", "TriangleCountAlgo"
         )
         df = self.get_spark_dataframe()
-        config = spark._jvm.TriangleConfig(encode_vertex_id)
+        config = spark._jvm.TriangleConfig(encode_vid)
         result = spark._jvm.TriangleCountAlgo.apply(jspark, df._jdf, config)
 
         return result
@@ -343,12 +347,13 @@ class NebulaDataFrameAlgorithm:
     # @algo
     # def closeness(self, weighted: bool = False):
     #     # TBD: ClosenessAlgo is not yet encodeID compatible
-    #     engine, spark, jspark, encode_vertex_id = self.get_spark_engine_context(
+    #     engine, spark, jspark, encode_vid = self.get_spark_engine_context(
     #         "ClosenessConfig", "ClosenessAlgo"
     #     )
     #     df = self.get_spark_dataframe()
-    #     config = spark._jvm.ClosenessConfig(weighted, encode_vertex_id)
-    #     result = spark._jvm.ClosenessAlgo.apply(jspark, df._jdf, config, False)
+    #     config = spark._jvm.ClosenessConfig(weighted, encode_vid)
+    #     result = spark._jvm.ClosenessAlgo.apply(
+    #         jspark, df._jdf, config, False)
 
     #     return result
 
@@ -376,12 +381,13 @@ class NebulaGraphAlgorithm:
         """
         Check if the engine is supported.
         For netowrkx, we can directly call .algo.pagerank()
-        For spark, we need to convert the NebulaGraphObject to NebulaDataFrameObject
+        For spark, we need to convert the NebulaGraphObject
+            to NebulaDataFrameObject
         """
         if self.graph.engine.type == "spark":
             raise Exception(
                 "For NebulaGraphObject in spark engine,"
-                "Please transform it to NebulaDataFrameObject to run algorithm",
+                "Plz transform it to NebulaDataFrameObject to run algorithm",
                 "For example: df = nebula_graph.to_df; df.algo.pagerank()",
             )
 

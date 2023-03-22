@@ -74,11 +74,11 @@ shell = """
     echo "Build and Install ng_ai to jupyter_spark, master_spark container"
     pdm build --dest tests/integration/setup/build/
 
-    docker exec -it master_spark sh -c 'pip3 uninstall ng_ai -y'
-    docker exec -it master_spark sh -c 'pip3 install /root/build/*.whl'
+    docker exec master_spark sh -c 'pip3 uninstall ng_ai -y'
+    docker exec master_spark sh -c 'pip3 install /root/build/*.whl'
     docker restart master_spark
-    docker exec -it jupyter_spark sh -c 'pip3 uninstall ng_ai -y'
-    docker exec -it jupyter_spark sh -c 'pip3 install /root/build/*.whl'
+    docker exec jupyter_spark sh -c 'pip3 uninstall ng_ai -y'
+    docker exec jupyter_spark sh -c 'pip3 install /root/build/*.whl'
     docker restart jupyter_spark
     sleep 7
     echo "Run integration tests"

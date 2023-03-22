@@ -21,6 +21,15 @@
     <img src="https://img.shields.io/badge/pdm-managed-blueviolet" alt="pdm-managed">
 </a>
 
+<a href="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml">
+  <img src="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml/badge.svg" alt="Tests">
+</a>
+
+<img src="https://img.shields.io/badge/Python-3.9-blue.svg" alt="Python 3.9">
+
+
+[![Tests](https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml)
+
 </p>
 
 ---

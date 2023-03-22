@@ -13,13 +13,19 @@
     <img src="https://badge.fury.io/py/ng_ai.svg" alt="PyPI version">
 </a>
 
-<a href="https://www.python.org/downloads/release/python-360/" target="_blank">
+<!-- <a href="https://www.python.org/downloads/release/python-360/" target="_blank">
     <img src="https://img.shields.io/badge/python-3.6%2B-blue.svg" alt="Python">
-</a>
+</a> -->
 
 <a href="https://pdm.fming.dev" target="_blank">
     <img src="https://img.shields.io/badge/pdm-managed-blueviolet" alt="pdm-managed">
 </a>
+
+<a href="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml">
+  <img src="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml/badge.svg" alt="Tests">
+</a>
+
+<img src="https://img.shields.io/badge/Python-3.9-blue.svg" alt="Python 3.9">
 
 </p>
 

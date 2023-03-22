@@ -1,4 +1,4 @@
-<img alt="NebulaGraph Data Intelligence Suite(ng_ai)" src="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
+<img alt="NebulaGraph AI Suite(ng_ai)" src="https://user-images.githubusercontent.com/1651790/226242809-fe488ff2-bb4a-4e7d-b23a-70865a7b3228.png">
 
 <p align="center">
     <em>NebulaGraph AI Suite with 4 line code to run Graph Algo on NebulaGraph</em>
@@ -136,7 +136,7 @@ ng_ai is an unified abstraction layer for different engines, the current impleme
     Engine└───────────────────────────────────────────────────┘
        │  ┌────────────────────────────────────────────────────┬──────────┐
        └──┤                                                    │          │
-          │   NebulaGraph Data Intelligence Suite(ngai)        │ ngai-api │◀─┐
+          │   NebulaGraph AI Suite(ngai)                       │ ngai-api │◀─┐
           │                                                    │          │  │
           │                                                    └──────────┤  │
           │     ┌────────┐    ┌──────┐    ┌────────┐   ┌─────┐            │  │
@@ -196,17 +196,7 @@ ng_ai is an unified abstraction layer for different engines, the current impleme
 
 ## Contributing
 
-```bash
-pip3 install pdm
-# build and install ng_ai
-pdm install
-# run tests
-pdm run test
-# lint
-pdm run lint
-# format
-pdm run format
-```
+See HACKING.md for details.
 
 ## License
 

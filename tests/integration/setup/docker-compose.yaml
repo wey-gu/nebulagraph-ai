@@ -106,11 +106,11 @@ services:
       - ngai-net
     restart: on-failure
 
-  juptyer_spark:
+  jupyter_spark:
     labels:
       - "com.vesoft.scope=ngai"
     image: 'weygu/pyspark-notebook-nebulagraph:2.4.5-hadoop2.7'
-    container_name: juptyer_spark
+    container_name: jupyter_spark
     restart: always
     ports:
       - '28888:8888'
@@ -126,6 +126,27 @@ services:
       start_period: 20s
     environment:
       - PYSPARK_PYTHON=python3
+
+  master_spark:
+    networks:
+      - ngai-net
+    volumes:
+      - ./:/root
+    image: 'bde2020/spark-master:2.4.5-hadoop2.7'
+    container_name: master_spark
+    ports:
+      - 37077:7077
+      - 36066:6066
+      - 38080:8080
+    healthcheck:
+      test: ["CMD", "netstat", "-plunt", "| grep 8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    environment:
+      - PYSPARK_PYTHON=python3
+      - INIT_DAEMON_STEP=setup_spark
 
   ngai_graphd:
     labels:
@@ -165,6 +186,26 @@ services:
     cap_add:
       - SYS_PTRACE
 
+  console:
+    image: vesoft/nebula-console:v3
+    container_name: ngai_console
+    entrypoint: ""
+    command: 
+      - sh
+      - -c
+      - |
+        for i in `seq 1 180`;do
+          var=`nebula-console -addr graphd -port 9669 -u root -p nebula -e 'ADD HOSTS "storaged0":9779'`;
+          if [[ $$? == 0 ]];then
+            break;
+          fi;
+          sleep 1;
+          echo "retry to add hosts.";
+        done && tail -f /dev/null;
+    depends_on:
+      - graphd
+    networks:
+      - ngai-net
+
 networks:
   ngai-net:
-  external: true

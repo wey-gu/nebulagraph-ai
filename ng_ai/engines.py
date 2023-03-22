@@ -38,13 +38,13 @@ class SparkEngine(BaseEngine):
         self.shuffle_partitions = DEFAULT_SHUFFLE_PARTITIONS
         self.executor_memory = DEFAULT_EXECUTOR_MEMORY
         self.driver_memory = DEFAULT_DRIVER_MEMORY
-        self.encode_vertex_id = ENCODE_VERTEX_ID
+        self.encode_vid = ENCODE_VERTEX_ID
         self.parse_config()
 
         from pyspark.sql import SparkSession
 
         self.spark = (
-            SparkSession.builder.appName("NebulaGraph Data Intelligence")
+            SparkSession.builder.appName("NebulaGraph AI")
             .config("spark.sql.shuffle.partitions", self.shuffle_partitions)
             .config("spark.executor.memory", self.executor_memory)
             .config("spark.driver.memory", self.driver_memory)
@@ -76,8 +76,8 @@ class SparkEngine(BaseEngine):
         if self.config.driver_memory is not None:
             self.driver_memory = self.config.driver_memory
 
-        if self.config.encode_vertex_id is not None:
-            self.encode_vertex_id = self.config.encode_vertex_id
+        if self.config.encode_vid is not None:
+            self.encode_vid = self.config.encode_vid
 
     def prepare(self):
         self.java_import = self._get_java_import()

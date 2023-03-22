@@ -138,3 +138,16 @@ requirements.txt
 # ide
 
 .vscode
+
+# integration
+
+.bash_history
+.jupyter
+.ipython
+.local
+data
+logs
+download
+run
+*.gz
+*.whl

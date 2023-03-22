@@ -27,9 +27,6 @@
 
 <img src="https://img.shields.io/badge/Python-3.9-blue.svg" alt="Python 3.9">
 
-
-[![Tests](https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml)
-
 </p>
 
 ---

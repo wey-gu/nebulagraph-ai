@@ -6,7 +6,7 @@ ng_ai-api = {call = "ng_ai.ng_ai_api.__main__:run"}
 [tool.pdm.scripts.test]
 shell = """
     pdm update -dG dev
-    pytest
+    pytest tests/unit/
 """
 
 [tool.pdm.scripts.lint]
@@ -21,7 +21,70 @@ shell = """
 shell = """
     pdm update -dG lint
     isort ng_ai tests
-    black --line-length 84 ng_ai tests
+    black --line-length 84 ng_ai tests examples
+"""
+
+[tool.pdm.scripts.dockerup]
+shell = """
+    echo "Downloading jar packages for NebulaGraph Algorithm"
+    mkdir -p tests/integration/setup/download
+    mkdir -p tests/integration/setup/udf
+    ALGO_VERSION="3.1.0"
+    SPARK_C_VERSION="3.4.0"
+    wget -O tests/integration/setup/download/nebula-algo.jar https://repo1.maven.org/maven2/com/vesoft/nebula-algorithm/$ALGO_VERSION/nebula-algorithm-$ALGO_VERSION.jar
+    # wget -O tests/integration/setup/download/nebula-spark-connector.jar https://repo1.maven.org/maven2/com/vesoft/nebula-spark-connector/$SPARK_C_VERSION/nebula-spark-connector-$SPARK_C_VERSION.jar
+    wget -O tests/integration/setup/udf/ng_ai.so https://github.com/wey-gu/nebulagraph-ai/releases/download/0.2.9/ng_ai-ubuntu-2004-nebulagraph-nightly-2023.03.13.so
+    chmod +x tests/integration/setup/udf/ng_ai.so
+    echo "Starting NebulaGraph"
+ 
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' up -d --remove-orphans
+    echo "Waiting for NebulaGraph to start..."
+    sleep 10
+    for i in {1..50}; do docker-compose -f 'tests/integration/setup/docker-compose.yaml' ps | grep "unhealthy\\|starting" | wc -l | grep -q 0 && break; echo Waiting for another 5 sec; sleep 5; done
+    echo "NebulaGraph is up and running, removing console container"
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' stop console
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' rm -f console
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' ps
+"""
+
+[tool.pdm.scripts.dockerstatus]
+shell = """
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' ps
+"""
+
+[tool.pdm.scripts.dockerdown]
+shell = """
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' down
+"""
+
+[tool.pdm.scripts.teardown]
+shell = """
+    docker-compose -f 'tests/integration/setup/docker-compose.yaml' down
+    rm -fr tests/integration/setup/download
+    rm -fr tests/integration/setup/udf
+"""
+
+[tool.pdm.scripts.int-test]
+shell = """
+    pdm update -dG dev
+    pdm run dockerup
+
+    mkdir -p tests/integration/setup/build/
+
+    echo "Build and Install ng_ai to jupyter_spark, master_spark container"
+    pdm build --dest tests/integration/setup/build/
+
+    docker exec -it master_spark sh -c 'pip3 uninstall ng_ai -y'
+    docker exec -it master_spark sh -c 'pip3 install /root/build/*.whl'
+    docker restart master_spark
+    docker exec -it jupyter_spark sh -c 'pip3 uninstall ng_ai -y'
+    docker exec -it jupyter_spark sh -c 'pip3 install /root/build/*.whl'
+    docker restart jupyter_spark
+    sleep 7
+    echo "Run integration tests"
+
+    pytest tests/integration/
+    pdm run dockerdown
 """
 
 [tool.black]
@@ -47,21 +110,17 @@ atomic = true
 skip_glob = ["*/setup.py"]
 filter_files = true
 
-[tool.pdm.dev-dependencies]
-dev = [
-    "pytest>=7.2.2",
-]
-
 [project]
 name = "ng_ai"
-version = "0.2.9.2"
-description = "NebulaGraph Data Intelligence Suite"
+version = "0.2.9.5"
+description = "NebulaGraph AI Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
 ]
 dependencies = [
     "flask>=2.0.3",
     "networkx>=2.5.1",
+    "nebula3-python",
 ]
 # pyspark for unit test cannot work with python 3.10
 requires-python = ">=3.7,<3.10"
@@ -73,16 +132,18 @@ requires = ["pdm-pep517>=1.0"]
 build-backend = "pdm.pep517.api"
 
 [project.optional-dependencies]
+# pyspark 2.4.8 doesn't work with python 3.8+, so we use 3.2.3
 spark = ["pyspark>=3.2.3"]
 networkx = ["networkx>=2.5.1"]
 all = ["ng_ai[spark,networkx]"]
 lint = [
     "flake8>=4.0.1",
-    "black>=23.1.0",
+    "black[jupyter]>=23.1.0",
     "isort>=5.11.5",
 ]
 test = [
     "pytest>=7.2.2",
-    "chispa"
+    "chispa",
+    "requests",
 ]
 dev = ["ng_ai[all,lint,test]"]

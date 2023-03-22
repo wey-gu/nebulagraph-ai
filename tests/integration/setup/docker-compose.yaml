@@ -1,0 +1,211 @@
+services:
+  metad0:
+    labels:
+      - "com.vesoft.scope=core"
+      - "com.vesoft.role=meta"
+    container_name: nebulagraph_metad0
+    image: vesoft/nebula-metad:v3.4.0
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559
+      - --local_ip=metad0
+      - --ws_ip=metad0
+      - --port=9559
+      - --ws_http_port=19559
+      - --data_path=/data/meta
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://metad0:19559/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 9559
+      - 19559
+      - 19560
+    volumes:
+      - ./data/meta0:/data/meta
+      - ./logs/meta0:/logs
+    networks:
+      - ngai-net
+    restart: on-failure
+
+  storaged0:
+    labels:
+      - "com.vesoft.scope=core"
+      - "com.vesoft.role=storage"
+    container_name: nebulagraph_storaged0
+    image: vesoft/nebula-storaged:v3.4.0
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559
+      - --local_ip=storaged0
+      - --ws_ip=storaged0
+      - --port=9779
+      - --ws_http_port=19779
+      - --data_path=/data/storage
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    depends_on:
+      - metad0
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://storaged0:19779/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 9779
+      - 19779
+      - 19780
+    volumes:
+      - ./data/storage0:/data/storage
+      - ./logs/storage0:/logs
+    networks:
+      - ngai-net
+    restart: on-failure
+
+  graphd:
+    labels:
+      - "com.vesoft.scope=core"
+      - "com.vesoft.role=graph"
+    container_name: nebulagraph_graphd
+    image: vesoft/nebula-graphd:v3.4.0
+    environment:
+      USER: root
+    command:
+      - --meta_server_addrs=metad0:9559
+      - --port=9669
+      - --local_ip=graphd
+      - --ws_ip=graphd
+      - --ws_http_port=19669
+      - --log_dir=/logs
+      - --v=0
+      - --minloglevel=0
+    depends_on:
+      - storaged0
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://graphd:19669/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - "39669:9669"
+      - 19669
+      - 19670
+    volumes:
+      - ./logs/graph:/logs
+    networks:
+      - ngai-net
+    restart: on-failure
+
+  jupyter_spark:
+    labels:
+      - "com.vesoft.scope=ngai"
+    image: 'weygu/pyspark-notebook-nebulagraph:2.4.5-hadoop2.7'
+    container_name: jupyter_spark
+    restart: always
+    ports:
+      - '28888:8888'
+    volumes:
+      - ./:/root
+    networks:
+      - ngai-net
+    healthcheck:
+      test: ["CMD", "netstat", "-plunt", "| grep 8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    environment:
+      - PYSPARK_PYTHON=python3
+
+  master_spark:
+    networks:
+      - ngai-net
+    volumes:
+      - ./:/root
+    image: 'bde2020/spark-master:2.4.5-hadoop2.7'
+    container_name: master_spark
+    ports:
+      - 37077:7077
+      - 36066:6066
+      - 38080:8080
+    healthcheck:
+      test: ["CMD", "netstat", "-plunt", "| grep 8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    environment:
+      - PYSPARK_PYTHON=python3
+      - INIT_DAEMON_STEP=setup_spark
+
+  ngai_graphd:
+    labels:
+      - "com.vesoft.scope=ngai"
+    image: weygu/ngai-graphd:2023.03.13
+    container_name: ngai_graphd
+    environment:
+      USER: root
+      ng_ai_gateway_url_prefix: "http://jupyter:9999"
+    command:
+      - --meta_server_addrs=metad0:9559,metad1:9559,metad2:9559
+      - --port=9669
+      - --local_ip=ngai_graphd
+      - --ws_ip=ngai_graphd
+      - --ws_http_port=19669
+      - --log_dir=/logs
+      - --v=5
+      - --minloglevel=0
+      - --enable_udf=true
+      - --udf_path=/udf/
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://ngai_graphd:19669/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - "29669:9669"
+      - 19669
+      - 19670
+    volumes:
+      - ./logs/ngai_graphd:/logs
+      - ./udf:/udf
+    networks:
+      - ngai-net
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  console:
+    image: vesoft/nebula-console:v3
+    container_name: ngai_console
+    entrypoint: ""
+    command: 
+      - sh
+      - -c
+      - |
+        for i in `seq 1 180`;do
+          var=`nebula-console -addr graphd -port 9669 -u root -p nebula -e 'ADD HOSTS "storaged0":9779'`;
+          if [[ $$? == 0 ]];then
+            break;
+          fi;
+          sleep 1;
+          echo "retry to add hosts.";
+        done && tail -f /dev/null;
+    depends_on:
+      - graphd
+    networks:
+      - ngai-net
+
+networks:
+  ngai-net:

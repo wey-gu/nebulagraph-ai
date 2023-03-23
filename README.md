@@ -44,6 +44,10 @@ With the support of single-machine engine(NetworkX), or distributed computing en
 
 ## Quick Start in 5 Minutes
 
+**Option 1**: Try on your Desktop? Go with [NebulaGraph Docker Extension](https://hub.docker.com/extensions/weygu/nebulagraph-dd-ext)!
+
+**Option 2**: On Linux Server? Go with Nebula-Up 👇🏻
+
 - Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/Environment_Setup.md).
 - Install ng_ai with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
 - Open the demo notebook and run cells one by one.

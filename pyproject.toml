@@ -84,7 +84,6 @@ shell = """
     echo "Run integration tests"
 
     pytest tests/integration/
-    pdm run dockerdown
 """
 
 [tool.black]

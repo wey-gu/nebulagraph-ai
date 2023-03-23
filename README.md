@@ -202,7 +202,7 @@ ng_ai is an unified abstraction layer for different engines, the current impleme
 
 ## Contributing
 
-See HACKING.md for details.
+See [HACKING.md](https://github.com/wey-gu/nebulagraph-ai/blob/main/HACKING.md) for details.
 
 ## License
 

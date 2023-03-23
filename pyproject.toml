@@ -111,7 +111,7 @@ filter_files = true
 
 [project]
 name = "ng_ai"
-version = "0.2.9.5"
+version = "0.2.9.6"
 description = "NebulaGraph AI Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
@@ -125,6 +125,16 @@ dependencies = [
 requires-python = ">=3.7,<3.10"
 readme = "README.md"
 license = {text = "Apache-2.0"}
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+]
+[project.urls]
+Homepage = "https://github.com/wey-gu/nebulagraph-ai"
+Repository = "https://github.com/wey-gu/nebulagraph-ai"
+Documentation = "https://github.com/wey-gu/nebulagraph-ai#documentation"
+Changelog = "https://github.com/wey-gu/nebulagraph-ai/releases"
 
 [build-system]
 requires = ["pdm-pep517>=1.0"]

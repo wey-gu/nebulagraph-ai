@@ -366,6 +366,7 @@ class NebulaGraphAlgorithm:
     def __init__(self, graph):
         self.graph = graph
         self.algorithms = []
+        self.engine = graph.engine
 
     def register_algo(self, func):
         self.algorithms.append(func.__name__)
@@ -384,14 +385,28 @@ class NebulaGraphAlgorithm:
         For spark, we need to convert the NebulaGraphObject
             to NebulaDataFrameObject
         """
-        if self.graph.engine.type == "spark":
+        if self.engine.type == "spark":
             raise Exception(
                 "For NebulaGraphObject in spark engine,"
                 "Plz transform it to NebulaDataFrameObject to run algorithm",
                 "For example: df = nebula_graph.to_df; df.algo.pagerank()",
             )
+        if self.engine.type == "networkx":
+            return True
+        else:
+            raise Exception("Unsupported engine type")
 
     @algo
-    def pagerank(self, reset_prob=0.15, max_iter=10):
+    def pagerank(self, reset_prob=0.15, max_iter=10, **kwargs):
         self.check_engine()
-        pass
+        g = self.graph._graph
+        weight = kwargs.get("weight", None)
+        assert type(weight) in [str, type(None)], "weight must be str or None"
+        assert type(reset_prob) == float, "reset_prob must be float"
+        assert type(max_iter) == int, "max_iter must be int"
+        tol = kwargs.get("tol", 1e-06)
+        assert type(tol) == float, "tol must be float"
+
+        return self.engine.nx.pagerank(
+            g, alpha=1 - reset_prob, max_iter=max_iter, tol=tol, weight=weight
+        )

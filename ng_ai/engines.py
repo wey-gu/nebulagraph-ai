@@ -116,15 +116,35 @@ class NebulaEngine(BaseEngine):
     def __init__(self, config=None):
         self.type = "nebula"
         self.config = config
+
+        # let's make all nx related import here
+        import networkx as nx
+        import ng_nx
+        from ng_nx import NebulaReader as NxReader
+        from ng_nx import NxScanReader, NxWriter
+        from ng_nx.utils import NxConfig, result_to_df
+
+        self.nx = nx
+        self.ng_nx = ng_nx
+        self.nx_reader = NxReader
+        self.nx_writer = NxWriter
+        self.nx_scan_reader = NxScanReader
+        self._nx_config = NxConfig
+
+        self.result_to_df = result_to_df
+
+        self.nx_config = None
         self.parse_config()
 
     def __str__(self):
-        return f"NebulaEngine: {self.config}"
+        return (
+            f"NebulaEngine(NetworkX): {self.config}, "
+            f"nx version: {self.nx.__version__}, "
+            f"ng_nx version: {self.ng_nx.__version__}"
+        )
 
     def parse_config(self):
         """parse and validate config"""
         if self.config is None:
             return
-
-    def prepare(self):
-        pass
+        self.nx_config = self._nx_config(**self.config.__dict__)

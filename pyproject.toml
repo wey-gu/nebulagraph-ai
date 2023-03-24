@@ -122,7 +122,7 @@ dependencies = [
     "nebula3-python",
 ]
 # pyspark for unit test cannot work with python 3.10
-requires-python = ">=3.7,<3.10"
+requires-python = ">=3.8,<3.10"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 classifiers = [
@@ -143,7 +143,9 @@ build-backend = "pdm.pep517.api"
 [project.optional-dependencies]
 # pyspark 2.4.8 doesn't work with python 3.8+, so we use 3.2.3
 spark = ["pyspark>=3.2.3"]
-networkx = ["networkx>=2.5.1"]
+networkx = [
+    "ng_nx>=0.1.4",
+]
 all = ["ng_ai[spark,networkx]"]
 lint = [
     "flake8>=4.0.1",
@@ -153,6 +155,5 @@ lint = [
 test = [
     "pytest>=7.2.2",
     "chispa",
-    "requests",
 ]
 dev = ["ng_ai[all,lint,test]"]

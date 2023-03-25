@@ -151,3 +151,5 @@ download
 run
 *.gz
 *.whl
+
+.python_history

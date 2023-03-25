@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-import networkx as nx
-
 
 class NebulaGraphObject:
     def __init__(self, df: NebulaDataFrameObject):
@@ -19,9 +17,16 @@ class NebulaGraphObject:
 
     @property
     def algo(self):
-        from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        if self.engine.type == "spark":
+            print(
+                "NebulaGraphObject.algo is not supported in spark engine, "
+                "please use NebulaDataFrameObject.algo instead"
+            )
+            raise NotImplementedError
+        if self.engine.type == "nebula":
+            from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
 
-        return NebulaAlgorithmImpl(self)
+            return NebulaAlgorithmImpl(self)
 
     def get_nx_graph(self):
         if self.engine.type == "nebula":
@@ -81,9 +86,16 @@ class NebulaDataFrameObject:
 
     @property
     def algo(self):
-        from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
+        if self.engine.type == "spark":
+            from ng_ai.nebula_algo import NebulaAlgorithm as NebulaAlgorithmImpl
 
-        return NebulaAlgorithmImpl(self)
+            return NebulaAlgorithmImpl(self)
+        else:
+            print(
+                "NebulaDataFrameObject.algo is not supported in nebula engine, "
+                "please use NebulaGraphObject.algo instead"
+            )
+            raise NotImplementedError
 
     def to_spark_df(self):
         if self.engine.type == "spark":
@@ -103,14 +115,11 @@ class NebulaDataFrameObject:
             raise NotImplementedError
 
     def to_networkx(self):
-        if self.engine.type == "nebula":
-            return nx.from_pandas_edgelist(self.data, "src", "dst")
-        else:
-            # for now the else case will be spark, to networkx is not supported
-            raise Exception(
-                "For NebulaDataFrameObject in spark engine,"
-                "convert to networkx graph is not supported",
-            )
+        # for now the else case will be spark, to networkx is not supported
+        raise Exception(
+            "For NebulaDataFrameObject in spark engine,"
+            "convert to networkx graph is not supported",
+        )
 
     def to_graphx(self):
         if self.engine.type == "spark":
@@ -128,4 +137,9 @@ class NebulaDataFrameObject:
         return NebulaGraphObject(self)
 
     def show(self, *keywords, **kwargs):
-        return self.data.show(*keywords, **kwargs)
+        if self.engine.type == "spark":
+            self.data.show(*keywords, **kwargs)
+        elif self.engine.type == "nebula":
+            print(self.data)
+        else:
+            raise NotImplementedError

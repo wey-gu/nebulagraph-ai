@@ -118,17 +118,18 @@ authors = [
 ]
 dependencies = [
     "flask>=2.0.3",
-    "networkx>=2.5.1",
-    "nebula3-python",
 ]
 # pyspark for unit test cannot work with python 3.10
-requires-python = ">=3.7,<3.10"
+requires-python = ">=3.7.1,<3.10"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
 ]
 [project.urls]
 Homepage = "https://github.com/wey-gu/nebulagraph-ai"
@@ -143,7 +144,12 @@ build-backend = "pdm.pep517.api"
 [project.optional-dependencies]
 # pyspark 2.4.8 doesn't work with python 3.8+, so we use 3.2.3
 spark = ["pyspark>=3.2.3"]
-networkx = ["networkx>=2.5.1"]
+networkx = [
+    "ng_nx>=0.1.6",
+    "pandas>=1.3.5",
+    "numpy>=1.21.6",
+    "scipy>=1.7.3",
+]
 all = ["ng_ai[spark,networkx]"]
 lint = [
     "flake8>=4.0.1",
@@ -152,7 +158,7 @@ lint = [
 ]
 test = [
     "pytest>=7.2.2",
-    "chispa",
-    "requests",
+    "chispa>=0.9.2",
+    "nebula3-python",
 ]
 dev = ["ng_ai[all,lint,test]"]

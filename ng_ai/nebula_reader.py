@@ -5,6 +5,8 @@ from __future__ import annotations
 from ng_ai.config import NebulaGraphConfig
 from ng_ai.nebula_data import NebulaDataFrameObject
 
+DEFAULT_NEBULA_QUERY_LIMIT = 1000
+
 
 class NebulaReaderBase(object):
     def __init__(self, engine=None, config=None, **kwargs):
@@ -54,22 +56,52 @@ class NebulaReaderWithGraph(NebulaReaderBase):
         self.engine = NebulaEngine(config)
         self.raw_df = None
         self.df = None
+        self.reader = None
 
     def scan(self, **kwargs):
         # Implement the scan method specific to Nebula engine
         raise NotImplementedError
 
     def query(self, **kwargs):
-        # Implement the query method specific to Nebula engine
-        raise NotImplementedError
+        limit = kwargs.get("limit", DEFAULT_NEBULA_QUERY_LIMIT)
+        assert type(limit) == int, "limit should be an integer"
+        assert "space" in kwargs, "space is required"
+        space = kwargs["space"]
+        assert "edges" in kwargs, "edges is required"
+        edges = kwargs["edges"]
+        assert type(edges) == list, "edges should be a list"
+        length_of_edges = len(edges)
+        props = kwargs.get("props", [[]] * length_of_edges)
+        assert type(props) == list, "props should be a list"
+        assert (
+            len(props) == length_of_edges
+        ), "length of props should be equal to length of edges"
+        for prop in props:
+            assert type(prop) == list, "props should be a list of list"
+            for item in prop:
+                assert type(item) == str, "props should be a list of list of string"
+
+        self.reader = NebulaReader(
+            space=space,
+            edges=edges,
+            properties=props,
+            nebula_config=self.engine._nx_config,
+            limit=limit,
+        )
+
+        return self.reader
 
     def load(self, **kwargs):
         # Implement the load method specific to Nebula engine
         raise NotImplementedError
 
     def read(self, **kwargs):
-        # Implement the read method specific to Nebula engine
-        raise NotImplementedError
+        if self.reader is None:
+            raise Exception(
+                "reader is not initialized, please call query or scan first"
+            )
+        self._graph = self.reader.read()
+        return self._graph
 
     def show(self, **kwargs):
         # Implement the show method specific to Nebula engine

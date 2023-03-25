@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-import networkx as nx
-
 
 class NebulaGraphObject:
     def __init__(self, df: NebulaDataFrameObject):

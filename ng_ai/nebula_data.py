@@ -3,14 +3,17 @@
 
 from __future__ import annotations
 
+from ng_ai.engines import NebulaEngine
+
 
 class NebulaGraphObject:
-    def __init__(self, df: NebulaDataFrameObject):
-        self.engine = df.engine
-        self.df = df
+    def __init__(self, engine: NebulaEngine, raw_graph, **kwargs):
+        self.engine = engine
         # if engine is nebula, self._graph is a networkx graph object
         # if engine is spark, self._graph is a spark graph object
-        self._graph = None
+        self._graph = raw_graph
+        # let's keep unified interface as NebulaDataFrameObject
+        self.data = self._graph
 
     def get_engine(self):
         return self.engine
@@ -30,10 +33,6 @@ class NebulaGraphObject:
 
     def get_nx_graph(self):
         if self.engine.type == "nebula":
-            if self._graph is None:
-                # convert the graph to a networkx graph
-                # and return the result
-                self.to_nx_graph()
             return self._graph
         else:
             # for now the else case will be spark, to networkx is not supported
@@ -42,33 +41,29 @@ class NebulaGraphObject:
                 "convert to networkx graph is not supported",
             )
 
-    def to_networkx(self, update=False):
-        if self.engine.type == "nebula":
-            # convert the graph to a networkx graph
-            # and return the result
-            if self._graph is None or update:
-                self._graph = self.df.to_networkx()
-            return self._graph
-        else:
-            # for now the else case will be spark, to networkx is not supported
-            raise Exception(
-                "For NebulaGraphObject in spark engine,"
-                "convert to networkx graph is not supported",
-            )
-
-    def to_graphx(self, update=False):
+    def stats(self, *keywords, **kwargs):
         if self.engine.type == "spark":
-            # convert the graph to a graphx graph
-            # and return the result
-            if self._graph is None or update:
-                self._graph = self.df.to_graphx()
-            return self._graph
+            raise NotImplementedError
+        elif self.engine.type == "nebula":
+            print(self.data)
+
+    def draw(self, with_labels=True, **kwargs):
+        if self.engine.type == "nebula":
+            self.engine.nx.draw(self.data, with_labels=with_labels, **kwargs)
         else:
-            # for now the else case will be nebula, to graphx is not supported
-            raise Exception(
-                "For NebulaGraphObject in nebula engine,"
-                "convert to graphx is not supported",
-            )
+            raise NotImplementedError
+
+    def show(self, limit=None):
+        if self.engine.type == "spark":
+            raise NotImplementedError
+        elif self.engine.type == "nebula":
+            if limit is None:
+                limit = 0
+            for u, v, key, attrs in self.data.edges(keys=True, data=True):
+                print(f"{u} -> {v} ({key}): {attrs}")
+                limit -= 1
+                if limit == 0:
+                    break
 
 
 class NebulaDataFrameObject:
@@ -97,7 +92,7 @@ class NebulaDataFrameObject:
             )
             raise NotImplementedError
 
-    def to_spark_df(self):
+    def get_spark_df(self):
         if self.engine.type == "spark":
             return self.data
         else:
@@ -134,7 +129,7 @@ class NebulaDataFrameObject:
             )
 
     def to_graph(self):
-        return NebulaGraphObject(self)
+        raise NotImplementedError
 
     def show(self, *keywords, **kwargs):
         if self.engine.type == "spark":

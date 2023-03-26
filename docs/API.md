@@ -81,13 +81,31 @@ df = reader.read() # this will take some time
 df.show(10)
 ```
 
+#### NebulaGraph Engine(NetworkX)
+
+```python
+from ng_ai import NebulaReader
+from ng_ai.config import NebulaGraphConfig
+# read data with spark engine, query mode
+config_dict = {
+    "graphd_hosts": "127.0.0.1:9669",
+    "user": "root",
+    "password": "nebula",
+    "space": "basketballplayer",
+}
+config = NebulaGraphConfig(**config_dict)
+reader = NebulaReader(engine="nebula", config=config)
+reader.query(edges=["follow", "serve"], props=[["degree"],[]])
+g = reader.read()
+g.show(10)
+g.draw()
+```
+
 ## engines
 
 - `ng_ai.engines.SparkEngine` is the Spark Engine for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter` and `ng_ai.NebulaAlgorithm`.
 
-- `ng_ai.engines.NebulaEngine` is the NebulaGraph Engine for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter`.
-
-- `ng_ai.engines.NetworkXEngine` is the NetworkX Engine for `ng_ai.NebulaAlgorithm`.
+- `ng_ai.engines.NebulaEngine` is the NebulaGraph Engine for `ng_ai.NebulaReader`, `ng_ai.NebulaWriter` and `ng_ai.NebulaAlgorithm`, which is based on NetworkX and Nebula-Python.
 
 ## `NebulaDataFrameObject`
 

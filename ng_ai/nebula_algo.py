@@ -57,7 +57,7 @@ class NebulaDataFrameAlgorithm:
             to NebulaGraphObject
         For spark, we can directly use the NebulaDataFrameObject
         """
-        if self.ndf_obj.engine.type == "networkx":
+        if self.ndf_obj.engine.type == "nebula":
             raise Exception(
                 "For NebulaDataFrameObject in networkx engine,"
                 "Plz transform it to NebulaGraphObject to run algorithm",
@@ -363,10 +363,10 @@ class NebulaGraphAlgorithm:
     Networkx to run algorithm
     """
 
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self, ng_obj: NebulaGraphObjectImpl):
+        self.ngraph = ng_obj
         self.algorithms = []
-        self.engine = graph.engine
+        self.engine = ng_obj.engine
 
     def register_algo(self, func):
         self.algorithms.append(func.__name__)
@@ -391,7 +391,7 @@ class NebulaGraphAlgorithm:
                 "Plz transform it to NebulaDataFrameObject to run algorithm",
                 "For example: df = nebula_graph.to_df; df.algo.pagerank()",
             )
-        if self.engine.type == "networkx":
+        if self.engine.type == "nebula":
             return True
         else:
             raise Exception("Unsupported engine type")
@@ -399,7 +399,7 @@ class NebulaGraphAlgorithm:
     @algo
     def pagerank(self, reset_prob=0.15, max_iter=10, **kwargs):
         self.check_engine()
-        g = self.graph._graph
+        g = self.ngraph.get_nx_graph()
         weight = kwargs.get("weight", None)
         assert type(weight) in [str, type(None)], "weight must be str or None"
         assert type(reset_prob) == float, "reset_prob must be float"

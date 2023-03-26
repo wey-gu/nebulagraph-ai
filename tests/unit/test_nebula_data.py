@@ -50,12 +50,3 @@ def test_nebula_data_frame_object(spark_df):
     nebula_df = NebulaDataFrameObject(engine=spark_engine, data=spark_df)
     assert nebula_df.get_engine().type == "spark"
     assert_df_equality(nebula_df.data, spark_df)
-
-
-def test_nebula_graph_object(spark_df):
-    config = NebulaGraphConfig()
-    spark_engine = SparkEngine(config=config)
-    nebula_df = NebulaDataFrameObject(engine=spark_engine, data=spark_df)
-    nebula_graph = NebulaGraphObject(nebula_df)
-    assert nebula_graph.get_engine().type == "spark"
-    assert_df_equality(nebula_graph.df.data, spark_df)

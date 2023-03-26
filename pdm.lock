@@ -231,11 +231,11 @@ summary = "Python package for creating and manipulating graphs and networks"
 
 [[package]]
 name = "ng-nx"
-version = "0.1.6"
-requires_python = ">=3.7,<3.11"
+version = "0.1.7"
+requires_python = ">=3.7.1,<3.11"
 summary = "NebulaGraph NetowrkX adaptor"
 dependencies = [
-    "nebula3-python",
+    "nebula3-python>=3.4.0",
     "networkx>=2.5.1",
     "numpy>=1.21.6",
     "pandas>=1.3.5",
@@ -465,7 +465,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:f1b40b7de51cfc845d4eec5615e89ae39dc225ea6b8391262d94572f6e78fa49"
+content_hash = "sha256:51892055a0a3816e79dbfd7a9633ca9097fc6b1be5522816466f4ae2f7ab7b35"
 
 [metadata.files]
 "appnope 0.1.3" = [
@@ -642,9 +642,9 @@ content_hash = "sha256:f1b40b7de51cfc845d4eec5615e89ae39dc225ea6b8391262d94572f6
     {url = "https://files.pythonhosted.org/packages/97/ae/7497bc5e1c84af95e585e3f98585c9f06c627fac6340984c4243053e8f44/networkx-2.6.3.tar.gz", hash = "sha256:c0946ed31d71f1b732b5aaa6da5a0388a345019af232ce2f49c766e2d6795c51"},
     {url = "https://files.pythonhosted.org/packages/e9/93/aa6613aa70d6eb4868e667068b5a11feca9645498fd31b954b6c4bb82fa5/networkx-2.6.3-py3-none-any.whl", hash = "sha256:80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef"},
 ]
-"ng-nx 0.1.6" = [
-    {url = "https://files.pythonhosted.org/packages/95/f6/75c1170a5ff6d49b34ef32831954cd2ed7299be4a7f11eafe4b6f5c889d9/ng-nx-0.1.6.tar.gz", hash = "sha256:5a33e48124a98542eb0068d40182cbafafb2449080d7a1665d1c93dea387ff01"},
-    {url = "https://files.pythonhosted.org/packages/ea/ef/577faa8dc05d28f9a1831b0e9d58e061b4b8e186266578b1cf10c5f371f1/ng_nx-0.1.6-py3-none-any.whl", hash = "sha256:6ca8460500bc9863cc44862d8d38ce0910f009f320f494cf9ce9b8c645eea845"},
+"ng-nx 0.1.7" = [
+    {url = "https://files.pythonhosted.org/packages/35/b0/97194a1736f34ca687e391fa211be3856e085298d8d51c922c208620ef77/ng-nx-0.1.7.tar.gz", hash = "sha256:3c0d9c1798988bf886a0e34444ec3aaa6285b0a223d448ae4fbb032df61afd06"},
+    {url = "https://files.pythonhosted.org/packages/97/99/d202e5ba18b821b6eed62f8c04e2bc10220933a91d0382d770e06cbdd428/ng_nx-0.1.7-py3-none-any.whl", hash = "sha256:15a49e34eb8ec232497288338b2049a969ed2477576afff84f89f1434302b252"},
 ]
 "numpy 1.21.6" = [
     {url = "https://files.pythonhosted.org/packages/06/78/b184f13f5461812a17a90b380d70a93fa3532460f0af9d72b0d93d8bc4ff/numpy-1.21.6-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:67c261d6c0a9981820c3a149d255a76918278a6b03b6a036800359aba1256d46"},

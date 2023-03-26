@@ -121,8 +121,10 @@ class NebulaEngine(BaseEngine):
         import networkx as nx
         import ng_nx
         from ng_nx import NebulaReader as NxReader
-        from ng_nx import NxScanReader, NxWriter
-        from ng_nx.utils import NxConfig, result_to_df
+        from ng_nx import NebulaScanReader as NxScanReader
+        from ng_nx import NebulaWriter as NxWriter
+        from ng_nx.utils import NebulaGraphConfig as NxConfig
+        from ng_nx.utils import result_to_df
 
         self.nx = nx
         self.ng_nx = ng_nx
@@ -130,6 +132,7 @@ class NebulaEngine(BaseEngine):
         self.nx_writer = NxWriter
         self.nx_scan_reader = NxScanReader
         self._nx_config = NxConfig
+        self.nx_config = None
 
         self.result_to_df = result_to_df
 

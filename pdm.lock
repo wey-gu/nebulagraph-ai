@@ -231,7 +231,7 @@ summary = "Python package for creating and manipulating graphs and networks"
 
 [[package]]
 name = "ng-nx"
-version = "0.1.7"
+version = "0.1.8"
 requires_python = ">=3.7.1,<3.11"
 summary = "NebulaGraph NetowrkX adaptor"
 dependencies = [
@@ -239,6 +239,7 @@ dependencies = [
     "networkx>=2.5.1",
     "numpy>=1.21.6",
     "pandas>=1.3.5",
+    "python-louvain>=0.16",
     "scipy>=1.7.3",
 ]
 
@@ -388,6 +389,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "python-louvain"
+version = "0.16"
+summary = "Louvain algorithm for community detection"
+dependencies = [
+    "networkx",
+    "numpy",
+]
+
+[[package]]
 name = "pytz"
 version = "2022.7.1"
 summary = "World timezone definitions, modern and historical"
@@ -465,7 +475,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:51892055a0a3816e79dbfd7a9633ca9097fc6b1be5522816466f4ae2f7ab7b35"
+content_hash = "sha256:295dabb866e124f2b45815873bec9a5be9a1fe6893514bc26faa256753ab5016"
 
 [metadata.files]
 "appnope 0.1.3" = [
@@ -642,9 +652,9 @@ content_hash = "sha256:51892055a0a3816e79dbfd7a9633ca9097fc6b1be5522816466f4ae2f
     {url = "https://files.pythonhosted.org/packages/97/ae/7497bc5e1c84af95e585e3f98585c9f06c627fac6340984c4243053e8f44/networkx-2.6.3.tar.gz", hash = "sha256:c0946ed31d71f1b732b5aaa6da5a0388a345019af232ce2f49c766e2d6795c51"},
     {url = "https://files.pythonhosted.org/packages/e9/93/aa6613aa70d6eb4868e667068b5a11feca9645498fd31b954b6c4bb82fa5/networkx-2.6.3-py3-none-any.whl", hash = "sha256:80b6b89c77d1dfb64a4c7854981b60aeea6360ac02c6d4e4913319e0a313abef"},
 ]
-"ng-nx 0.1.7" = [
-    {url = "https://files.pythonhosted.org/packages/35/b0/97194a1736f34ca687e391fa211be3856e085298d8d51c922c208620ef77/ng-nx-0.1.7.tar.gz", hash = "sha256:3c0d9c1798988bf886a0e34444ec3aaa6285b0a223d448ae4fbb032df61afd06"},
-    {url = "https://files.pythonhosted.org/packages/97/99/d202e5ba18b821b6eed62f8c04e2bc10220933a91d0382d770e06cbdd428/ng_nx-0.1.7-py3-none-any.whl", hash = "sha256:15a49e34eb8ec232497288338b2049a969ed2477576afff84f89f1434302b252"},
+"ng-nx 0.1.8" = [
+    {url = "https://files.pythonhosted.org/packages/27/fc/fd86d6e55d4413b71f5d0c24233f81e1b621404bcceb6ca2de768cb1f8c0/ng_nx-0.1.8-py3-none-any.whl", hash = "sha256:cd221fcf97b2faeaed12aa1cf4b9f982877ad1018a6ccb2b6e81f5a865dabca0"},
+    {url = "https://files.pythonhosted.org/packages/99/82/fb70b87fc591f4cdf904e676f0652c9986fc617b84ec7d66c1fc28199b9d/ng-nx-0.1.8.tar.gz", hash = "sha256:a3a0ad3ef56c49c1ef68dcb503a279a9d8345ee103ac8066d23985ac0df933c5"},
 ]
 "numpy 1.21.6" = [
     {url = "https://files.pythonhosted.org/packages/06/78/b184f13f5461812a17a90b380d70a93fa3532460f0af9d72b0d93d8bc4ff/numpy-1.21.6-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:67c261d6c0a9981820c3a149d255a76918278a6b03b6a036800359aba1256d46"},
@@ -772,6 +782,9 @@ content_hash = "sha256:51892055a0a3816e79dbfd7a9633ca9097fc6b1be5522816466f4ae2f
 "python-dateutil 2.8.2" = [
     {url = "https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
     {url = "https://files.pythonhosted.org/packages/4c/c4/13b4776ea2d76c115c1d1b84579f3764ee6d57204f6be27119f13a61d0a9/python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+]
+"python-louvain 0.16" = [
+    {url = "https://files.pythonhosted.org/packages/7c/0d/8787b021d52eb8764c0bb18ab95f720cf554902044c6a5cb1865daf45763/python-louvain-0.16.tar.gz", hash = "sha256:b7ba2df5002fd28d3ee789a49532baad11fe648e4f2117cf0798e7520a1da56b"},
 ]
 "pytz 2022.7.1" = [
     {url = "https://files.pythonhosted.org/packages/03/3e/dc5c793b62c60d0ca0b7e58f1fdd84d5aaa9f8df23e7589b39cc9ce20a03/pytz-2022.7.1.tar.gz", hash = "sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0"},

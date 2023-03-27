@@ -80,7 +80,6 @@ class NebulaReaderWithGraph(NebulaReaderBase):
             for item in prop:
                 assert type(item) == str, "props should be a list of list of string"
         self.raw_graph_reader = self.engine.nx_reader(
-            space=space,
             edges=edges,
             properties=props,
             nebula_config=self.engine.nx_config,

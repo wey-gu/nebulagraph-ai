@@ -10,6 +10,11 @@ SPARK_FILE_SINKS = ["csv", "json", "parquet"]
 SPARK_SERVER_SINKS = []
 SPARK_SINKS = SPARK_NEBULA_SINKS + SPARK_FILE_SINKS + SPARK_SERVER_SINKS
 
+NEBULA_SINKS = ["nebulagraph_vertex"]
+NEBULA_BATCH_SIZE = 256
+NEBULA_WRITER_MODES = ["insert", "update"]
+DEFAULT_NEBULA_WRITER_MODE = "insert"
+
 
 class NebulaWriterBase(object):
     def __init__(self, engine=None, config=None, **kwargs):
@@ -53,8 +58,36 @@ class NebulaWriterWithGraph(NebulaWriterBase):
         from ng_ai.engines import NebulaEngine
 
         self.engine = NebulaEngine(config)
-        self.raw_df = None
-        self.df = None
+        self.sink = sink
+        self.nx_writer = self.engine.nx_writer(data=data, nebula_config=config)
+        self.raw_data = data
+        self._options = {
+            "batch_size": NEBULA_BATCH_SIZE,
+            "write_mode": DEFAULT_NEBULA_WRITER_MODE,
+            "label": None,
+            "properties": None,
+            "sink": self.sink,
+        }
+
+    def set_options(self, **kwargs):
+        for k, v in kwargs.items():
+            if k in self._options:
+                self._options[k] = v
+            elif k in ["tag", "edge"]:
+                self._options["label"] = v
+        self.nx_writer.set_options(**self._options)
+
+    def get_options(self):
+        return self._options
+
+    def write(self):
+        # Ensure self.nx_writer.label, self.nx_writer.properties are not None
+        if self.nx_writer.label is None:
+            raise Exception("Label(tag or edge) should be set for NebulaWriter")
+        if self.nx_writer.properties is None:
+            raise Exception("Properties should be set for NebulaWriter")
+
+        self.nx_writer.write()
 
 
 class NebulaWriterWithSpark(NebulaWriterBase):

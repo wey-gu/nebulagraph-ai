@@ -111,7 +111,7 @@ filter_files = true
 
 [project]
 name = "ng_ai"
-version = "0.2.9.6"
+version = "0.2.10.0"
 description = "NebulaGraph AI Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},

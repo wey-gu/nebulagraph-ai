@@ -86,7 +86,7 @@ df.show(10)
 ```python
 from ng_ai import NebulaReader
 from ng_ai.config import NebulaGraphConfig
-# read data with spark engine, query mode
+# read data with nebula engine, query mode
 config_dict = {
     "graphd_hosts": "127.0.0.1:9669",
     "user": "root",
@@ -197,6 +197,46 @@ MATCH (v:louvain)
 RETURN id(v), v.louvain.cluster_id LIMIT 10;
 ```
 
+#### NebulaGraph Engine(NetworkX) Writer
+
+Create schema in NebulaGraph:
+
+```ngql
+CREATE TAG IF NOT EXISTS pagerank (
+    pagerank double NOT NULL
+);
+```
+
+Assuming we have a `graph_result` computed with `graph.algo.pagerank()`:
+
+```python
+graph_result = g.algo.pagerank()
+```
+
+Then we could write the pagerank result back to NebulaGraph with the following code:
+
+```python
+from ng_ai import NebulaWriter
+
+writer = NebulaWriter(
+    data=graph_result,
+    sink="nebulagraph_vertex",
+    config=config,
+    engine="nebula",
+)
+
+# properties to write
+properties = ["pagerank"]
+
+writer.set_options(
+    tag="pagerank",
+    properties=properties,
+    batch_size=256,
+    write_mode="insert",
+)
+# write back to NebulaGraph
+writer.write()
+```
 
 ## NebulaGNN
 

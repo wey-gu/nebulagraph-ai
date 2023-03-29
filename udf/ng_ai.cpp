@@ -155,7 +155,7 @@ nebula::Value ng_ai::call_ng_ai_api(
     return nebula::Value(response);
   }
   // validate name exists in algo_context, and the value is in ["label_propagation", "louvain",
-  // "k_core", "degree_statics", "betweenness_centrality", "coefficient_centrality", "bfs", "hanp",
+  // "k_core", "degree_statics", "betweenness_centrality", "clustering_coefficient", "bfs", "hanp",
   // "jaccard", "strong_connected_components", "triangle_coun", "pagerank"] if not valid, return response MAP
   // with error message: "Invalid algo_name: {algo_name}"
   auto algo_name = algo_context.kvs.find("name");
@@ -168,7 +168,7 @@ nebula::Value ng_ai::call_ng_ai_api(
   auto algo_name_value = algo_name->second.getStr();
   if (algo_name_value != "label_propagation" && algo_name_value != "louvain" &&
       algo_name_value != "k_core" && algo_name_value != "degree_statics" &&
-      algo_name_value != "betweenness_centrality" && algo_name_value != "coefficient_centrality" &&
+      algo_name_value != "betweenness_centrality" && algo_name_value != "clustering_coefficient" &&
       algo_name_value != "bfs" && algo_name_value != "hanp" && algo_name_value != "jaccard" &&
       algo_name_value != "strong_connected_components" && algo_name_value != "triangle_coun" &&
       algo_name_value != "pagerank") {
@@ -177,7 +177,7 @@ nebula::Value ng_ai::call_ng_ai_api(
     response.kvs.emplace("algo_name", algo_name_value);
     response.kvs.emplace("hint", nebula::Value(
       "Valid algo_name: label_propagation, louvain, k_core, degree_statics, betweenness_centrality, "
-      "coefficient_centrality, bfs, hanp, jaccard, strong_connected_components, triangle_coun, "
+      "clustering_coefficient, bfs, hanp, jaccard, strong_connected_components, triangle_coun, "
       "pagerank"));
     return nebula::Value(response);
   }

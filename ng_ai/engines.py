@@ -118,6 +118,7 @@ class NebulaEngine(BaseEngine):
         self.config = config
 
         # let's make all nx related import here
+        import community as community_louvain
         import networkx as nx
         import ng_nx
         from ng_nx import NebulaReader as NxReader
@@ -125,12 +126,15 @@ class NebulaEngine(BaseEngine):
         from ng_nx import NebulaWriter as NxWriter
         from ng_nx.utils import NebulaGraphConfig as NxConfig
         from ng_nx.utils import result_to_df
+        from node2vec import Node2Vec
 
         self.nx = nx
         self.ng_nx = ng_nx
         self.nx_reader = NxReader
         self.nx_writer = NxWriter
         self.nx_scan_reader = NxScanReader
+        self.nx_community_louvain = community_louvain
+        self.nx_node2vec = Node2Vec
         self._nx_config = NxConfig
         self.nx_config = None
 

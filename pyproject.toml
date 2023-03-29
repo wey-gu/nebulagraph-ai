@@ -111,7 +111,7 @@ filter_files = true
 
 [project]
 name = "ng_ai"
-version = "0.2.10.0"
+version = "0.2.10.1"
 description = "NebulaGraph AI Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
@@ -149,6 +149,7 @@ networkx = [
     "pandas>=1.3.5",
     "numpy>=1.21.6",
     "scipy>=1.7.3",
+    "gensim==4.1.0",
 ]
 all = ["ng_ai[spark,networkx]"]
 lint = [

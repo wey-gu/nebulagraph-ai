@@ -181,9 +181,7 @@ class NebulaDataFrameAlgorithm:
         return result
 
     @algo
-    def betweenness_centrality(
-        self, max_iter: int = 10, degree: int = 2, weighted: bool = False
-    ):
+    def betweenness_centrality(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "BetweennessConfig", "BetweennessCentralityAlgo"
         )
@@ -197,11 +195,11 @@ class NebulaDataFrameAlgorithm:
         return result
 
     @algo
-    def coefficient_centrality(self, type: str = "local"):
+    def clustering_coefficient(self, type: str = "local"):
         # type could be either "local" or "global"
         assert type.lower() in ["local", "global"], (
             "type should be either local or global"
-            f"in coefficient_centrality algo. Got type: {type}"
+            f"in clustering_coefficient algo. Got type: {type}"
         )
         engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "CoefficientConfig", "ClusteringCoefficientAlgo"
@@ -247,6 +245,9 @@ class NebulaDataFrameAlgorithm:
         weighted: bool = False,
         preferences=None,
     ):
+        """
+        Hop Attenuation & Node Preference
+        """
         engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "HanpConfig", "HanpAlgo"
         )
@@ -345,7 +346,7 @@ class NebulaDataFrameAlgorithm:
         return result
 
     # @algo
-    # def closeness(self, weighted: bool = False):
+    # def closeness_centrality(self, weighted: bool = False):
     #     # TBD: ClosenessAlgo is not yet encodeID compatible
     #     engine, spark, jspark, encode_vid = self.get_spark_engine_context(
     #         "ClosenessConfig", "ClosenessAlgo"
@@ -409,4 +410,281 @@ class NebulaGraphAlgorithm:
 
         return self.engine.nx.pagerank(
             g, alpha=1 - reset_prob, max_iter=max_iter, tol=tol, weight=weight
+        )
+
+    @algo
+    def connected_components(self):
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        ug = g.to_undirected()
+        return self.engine.nx.connected_components(ug)
+
+    @algo
+    def louvain(self, weight: str = None, resolution: float = 1.0):
+        """
+        doc: https://github.com/taynaud/python-louvain
+        """
+        weight = weight if weight else ""
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        ug = g.to_undirected()
+        return self.engine.nx_community_louvain.best_partition(
+            ug, weight=weight, resolution=resolution
+        )
+
+    @algo
+    def label_propagation(self, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/community.html
+        """
+
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        ug = g.to_undirected()
+        return self.engine.nx.algorithms.community.label_propagation_communities(
+            ug, **kwargs
+        )
+
+    @algo
+    def k_core(self, k: int = 2):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.core.k_core.html
+        return: networkx.classes.digraph.DiGraph
+        """
+        # TBD, k_core requires single graph
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to DiGraph
+        single_g = self.engine.nx.DiGraph()
+        for u, v in g.edges():
+            single_g.add_edge(u, v)
+        return self.engine.nx.k_core(single_g, k=k)
+
+    @algo
+    def k_truss(self, k: int = 2):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.core.k_truss.html
+        return: networkx.classes.graph.Graph
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to Graph
+        single_ug = self.engine.nx.Graph()
+        for u, v in g.edges():
+            single_ug.add_edge(u, v)
+        return self.engine.nx.k_truss(single_ug, k=k)
+
+    @algo
+    def k_clique_communities(self, k: int = 2, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/community.html
+        return: Yields sets of nodes, one for each k-clique community.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        ug = g.to_undirected()
+        return self.engine.nx.algorithms.community.k_clique_communities(
+            ug, k=k, **kwargs
+        )
+
+    @algo
+    def degree_statics(self):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/classes/generated/networkx.MultiDiGraph.degree.html
+        return: List[Tuple[str, int, int, int]], (node_id, degree, in_degree, out_degree)
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        degrees = dict(g.degree())
+        in_degrees = dict(g.in_degree())
+        out_degrees = dict(g.out_degree())
+
+        result = []
+        for node_id in g.nodes():
+            degree = degrees[node_id]
+            in_degree = in_degrees[node_id]
+            out_degree = out_degrees[node_id]
+            result.append((node_id, degree, in_degree, out_degree))
+        return result
+
+    @algo
+    def betweenness_centrality(
+        self, k: int = None, normalized: bool = True, weight: str = None, **kwargs
+    ):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.centrality.betweenness_centrality.html
+        return: Dictionary of nodes with betweenness centrality as the value.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to DiGraph
+        single_g = self.engine.nx.DiGraph()
+        for u, v, data in g.edges(data=True):
+            if weight is not None and weight in data:
+                single_g.add_edge(u, v, weight=data[weight])
+            else:
+                single_g.add_edge(u, v)
+        return self.engine.nx.betweenness_centrality(
+            single_g, k=k, normalized=normalized, weight=weight, **kwargs
+        )
+
+    @algo
+    def clustering_coefficient(self, weight: str = None, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.cluster.clustering.html
+        return: Dictionary of nodes with clustering coefficient as the value.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to DiGraph
+        single_g = self.engine.nx.DiGraph()
+        for u, v, data in g.edges(data=True):
+            if weight is not None and weight in data:
+                single_g.add_edge(u, v, weight=data[weight])
+            else:
+                single_g.add_edge(u, v)
+        return self.engine.nx.clustering(single_g, weight=weight, **kwargs)
+
+    @algo
+    def bfs(self, root=None, max_depth: int = 10, reverse: bool = False, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html
+        root: The node at which to start the search, defaults to the first node in the graph.
+        reverse: If True, perform a reverse breadth-first-search.
+        return: Yields edges in a breadth-first-search starting at source.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        if root is None:
+            root = next(iter(g.nodes()))
+        return self.engine.nx.bfs_edges(
+            g, source=root, depth_limit=max_depth, reverse=reverse, **kwargs
+        )
+
+    @algo
+    def dfs(self, root=None, max_depth: int = 10, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.traversal.depth_first_search.dfs_edges.html
+        root: The node at which to start the search, defaults to the first node in the graph.
+        return: Yields edges in a depth-first-search starting at source.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        if root is None:
+            root = next(iter(g.nodes()))
+        return self.engine.nx.dfs_edges(
+            g, source=root, depth_limit=max_depth, **kwargs
+        )
+
+    @algo
+    def node2vec(
+        self,
+        dimensions: int = 128,
+        walk_length: int = 80,
+        num_walks: int = 10,
+        workers: int = 1,
+        fit_args: dict = {},
+        **kwargs,
+    ):
+        """
+        doc: https://github.com/eliorc/node2vec
+        dimensions: int, optional (default = 128), Dimensionality of the word vectors.
+        walk_length: int, optional (default = 80), Length of walk per source. Default value is 80.
+        num_walks: int, optional (default = 10), Number of walks per source. Default value is 10.
+        workers: int, optional (default = 1), Number of parallel workers. Default is 1.
+        fit_args: dict, optional (default = {}), Arguments for gensim.models.Word2Vec.fit()
+        return: gensim.models.keyedvectors.Word2VecKeyedVectorsmodel
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        node2vec = self.engine.nx_node2vec(
+            graph=g,
+            dimensions=dimensions,
+            walk_length=walk_length,
+            num_walks=num_walks,
+            workers=workers,
+            **kwargs,
+        )
+        model = node2vec.fit(**fit_args)
+        return model
+
+    @algo
+    def jaccard(self, ebunch: list = None, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.link_prediction.jaccard_coefficient.html
+        ebunch: iterable of node pairs, optional (default = None), If provided, only return the Jaccard coefficient for the specified pairs.
+            example: [('A', 'B'), ('A', 'C')]
+        return: Yields tuples of (u, v, p) where u and v are nodes and p is the Jaccard coefficient of the neighbors of u and v.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to Graph
+        single_ug = self.engine.nx.Graph()
+        for u, v in g.edges():
+            single_ug.add_edge(u, v)
+        return self.engine.nx.jaccard_coefficient(
+            single_ug, ebunch=ebunch, **kwargs
+        )
+
+    @algo
+    def connected_components(self, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.components.connected_components.html
+        return: A generator of sets of nodes, one for each connected component in the graph.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to MultiGraph
+        ug = g.to_undirected()
+        return self.engine.nx.connected_components(ug, **kwargs)
+
+    @algo
+    def weakly_connected_components(self, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.components.weakly_connected_components.html
+        return: A generator of sets of nodes, one for each weakly connected component in the graph.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        return self.engine.nx.weakly_connected_components(g, **kwargs)
+
+    @algo
+    def strongly_connected_components(self, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.components.strongly_connected_components.html
+        return: A generator of sets of nodes, one for each strongly connected component in the graph.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        return self.engine.nx.strongly_connected_components(g, **kwargs)
+
+    @algo
+    def triangle_count(self, **kwargs):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.cluster.triangles.html
+        return: A dictionary keyed by node to the number of triangles that include that node as a vertex.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        # MultiDiGraph to Graph
+        single_ug = self.engine.nx.Graph()
+        for u, v in g.edges():
+            single_ug.add_edge(u, v)
+        return self.engine.nx.triangles(single_ug, **kwargs)
+
+    @algo
+    def closeness_centrality(
+        self, u=None, distance=None, wf_improved=True, **kwargs
+    ):
+        """
+        doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.centrality.closeness_centrality.html
+        u: node, optional (default = None), If specified, return only the value for the node u.
+        distance: edge attribute key, optional (default = None), Use the specified edge attribute as the edge distance in shortest path calculations.
+        wf_improved: bool, optional (default = True), If True, use the improved algorithm of Freeman and Bader which computes the closeness centrality using the number of reachable nodes instead of the number of nodes in the graph.
+        return: A dictionary keyed by node to the closeness centrality of that node.
+        """
+        self.check_engine()
+        g = self.ngraph.get_nx_graph()
+        return self.engine.nx.closeness_centrality(
+            g, u=u, distance=distance, wf_improved=wf_improved, **kwargs
         )

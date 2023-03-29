@@ -197,6 +197,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "joblib"
+version = "1.2.0"
+requires_python = ">=3.7"
+summary = "Lightweight pipelining with Python functions"
+
+[[package]]
 name = "markupsafe"
 version = "2.1.2"
 requires_python = ">=3.7"
@@ -252,6 +258,18 @@ dependencies = [
     "pandas>=1.3.5",
     "python-louvain>=0.16",
     "scipy>=1.7.3",
+]
+
+[[package]]
+name = "node2vec"
+version = "0.4.3"
+summary = "Implementation of the node2vec algorithm."
+dependencies = [
+    "gensim",
+    "joblib>=0.13.2",
+    "networkx",
+    "numpy",
+    "tqdm",
 ]
 
 [[package]]
@@ -453,6 +471,15 @@ requires_python = ">=3.7"
 summary = "A lil' TOML parser"
 
 [[package]]
+name = "tqdm"
+version = "4.65.0"
+requires_python = ">=3.7"
+summary = "Fast, Extensible Progress Meter"
+dependencies = [
+    "colorama; platform_system == \"Windows\"",
+]
+
+[[package]]
 name = "traitlets"
 version = "5.9.0"
 requires_python = ">=3.7"
@@ -492,7 +519,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:2cd564253b9c2bea87a4d501db70150547f259f75b8b28b1af350f358e2e6313"
+content_hash = "sha256:2a51745270d8b492cc07d7bd2260508fa52b52ef89e2cca3b79a26236d42620e"
 
 [metadata.files]
 "appnope 0.1.3" = [
@@ -616,6 +643,10 @@ content_hash = "sha256:2cd564253b9c2bea87a4d501db70150547f259f75b8b28b1af350f358
     {url = "https://files.pythonhosted.org/packages/7a/ff/75c28576a1d900e87eb6335b063fab47a8ef3c8b4d88524c4bf78f670cce/Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
     {url = "https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
 ]
+"joblib 1.2.0" = [
+    {url = "https://files.pythonhosted.org/packages/45/dd/a5435a6902d6315241c48a5343e6e6675b007e05d3738ed97a7a47864e53/joblib-1.2.0.tar.gz", hash = "sha256:e1cee4a79e4af22881164f218d4311f60074197fb707e082e803b61f6d137018"},
+    {url = "https://files.pythonhosted.org/packages/91/d4/3b4c8e5a30604df4c7518c562d4bf0502f2fa29221459226e140cf846512/joblib-1.2.0-py3-none-any.whl", hash = "sha256:091138ed78f800342968c523bdde947e7a305b8594b910a0fea2ab83c3c6d385"},
+]
 "markupsafe 2.1.2" = [
     {url = "https://files.pythonhosted.org/packages/02/2c/18d55e5df6a9ea33709d6c33e08cb2e07d39e20ad05d8c6fbf9c9bcafd54/MarkupSafe-2.1.2-cp310-cp310-win_amd64.whl", hash = "sha256:835fb5e38fd89328e9c81067fd642b3593c33e1e17e2fdbf77f5676abb14a156"},
     {url = "https://files.pythonhosted.org/packages/04/cf/9464c3c41b7cdb8df660cda75676697e7fb49ce1be7691a1162fc88da078/MarkupSafe-2.1.2-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:085fd3201e7b12809f9e6e9bc1e5c96a368c8523fad5afb02afe3c051ae4afcc"},
@@ -691,6 +722,9 @@ content_hash = "sha256:2cd564253b9c2bea87a4d501db70150547f259f75b8b28b1af350f358
 "ng-nx 0.1.8" = [
     {url = "https://files.pythonhosted.org/packages/27/fc/fd86d6e55d4413b71f5d0c24233f81e1b621404bcceb6ca2de768cb1f8c0/ng_nx-0.1.8-py3-none-any.whl", hash = "sha256:cd221fcf97b2faeaed12aa1cf4b9f982877ad1018a6ccb2b6e81f5a865dabca0"},
     {url = "https://files.pythonhosted.org/packages/99/82/fb70b87fc591f4cdf904e676f0652c9986fc617b84ec7d66c1fc28199b9d/ng-nx-0.1.8.tar.gz", hash = "sha256:a3a0ad3ef56c49c1ef68dcb503a279a9d8345ee103ac8066d23985ac0df933c5"},
+]
+"node2vec 0.4.3" = [
+    {url = "https://files.pythonhosted.org/packages/87/c4/8e859a1099d78dbb00b25c6832b8ee9fe11110cc7f2f3a6a4bd37ada3185/node2vec-0.4.3.tar.gz", hash = "sha256:7107757177b0c7730215c4b40524ca63420cf2c23e0af290a45c6e3bc0dc24e2"},
 ]
 "numpy 1.21.6" = [
     {url = "https://files.pythonhosted.org/packages/06/78/b184f13f5461812a17a90b380d70a93fa3532460f0af9d72b0d93d8bc4ff/numpy-1.21.6-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:67c261d6c0a9981820c3a149d255a76918278a6b03b6a036800359aba1256d46"},
@@ -876,6 +910,10 @@ content_hash = "sha256:2cd564253b9c2bea87a4d501db70150547f259f75b8b28b1af350f358
 "tomli 2.0.1" = [
     {url = "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {url = "https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+"tqdm 4.65.0" = [
+    {url = "https://files.pythonhosted.org/packages/3d/78/81191f56abb7d3d56963337dbdff6aa4f55805c8afd8bad64b0a34199e9b/tqdm-4.65.0.tar.gz", hash = "sha256:1871fb68a86b8fb3b59ca4cdd3dcccbc7e6d613eeed31f4c332531977b89beb5"},
+    {url = "https://files.pythonhosted.org/packages/e6/02/a2cff6306177ae6bc73bc0665065de51dfb3b9db7373e122e2735faf0d97/tqdm-4.65.0-py3-none-any.whl", hash = "sha256:c4f53a17fe37e132815abceec022631be8ffe1b9381c2e6e30aa70edc99e9671"},
 ]
 "traitlets 5.9.0" = [
     {url = "https://files.pythonhosted.org/packages/39/c3/205e88f02959712b62008502952707313640369144a7fded4cbc61f48321/traitlets-5.9.0.tar.gz", hash = "sha256:f6cde21a9c68cf756af02035f72d5a723bf607e862e7be33ece505abf4a3bad9"},

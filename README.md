@@ -40,15 +40,15 @@
 
 NebulaGraph AI Suite for Python (ng_ai) is a powerful Python library that offers APIs for data scientists to effectively read, write, analyze, and compute data in NebulaGraph.
 
-With the support of single-machine engine(NetworkX), or distributed computing environment using Spark we could perform Graph Analysis and Algorithms on top of NebulaGraph in less than 10 lines of code, in unified and intuitive API.
+With the support of a single-machine engine(NetworkX), or distributed computing environment using Spark, we could perform Graph Analysis and Algorithms on top of NebulaGraph in less than 10 lines of code, in unified and intuitive API.
 
 ## Quick Start in 5 Minutes
 
-**Option 1**: Try on your Desktop? Go with [NebulaGraph Docker Extension](https://hub.docker.com/extensions/weygu/nebulagraph-dd-ext)!
+**Option 1**: Try on your Desktop. Go with [NebulaGraph Docker Extension](https://hub.docker.com/extensions/weygu/nebulagraph-dd-ext)!
 
 **Option 2**: On Linux Server? Go with Nebula-Up 👇🏻
 
-- Setup env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/Environment_Setup.md).
+- Set up env with Nebula-Up following [this guide](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/Environment_Setup.md).
 - Install ng_ai with pip from the Jupyter Notebook with http://localhost:8888 (password: `nebula`).
 - Open the demo notebook and run cells one by one.
 - Check the [API Reference](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md)
@@ -63,7 +63,7 @@ pip install ng_ai
 
 ### Call from nGQL
 
-See more details in [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/ng_ai_API_Gateway.md)
+See more details in the [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/ng_ai_API_Gateway.md)
 
 ```cypher
 RETURN ng_ai("pagerank", ["follow"], ["degree"], "spark",
@@ -76,7 +76,7 @@ See also: [examples/spark_engine.ipynb](https://github.com/wey-gu/nebulagraph-ai
 
 Run Algorithm on top of NebulaGraph:
 
-> Note, there is also query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md) for more details.
+> Note, there is also a query mode, refer to [examples](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/spark_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md) for more details.
 
 ```python
 from ng_ai import NebulaReader
@@ -115,9 +115,9 @@ MATCH (v:louvain)
 RETURN id(v), v.louvain.cluster_id LIMIT 10;
 ```
 
-### NebulaGraph Engine Examples(not yet implemented)
+### NebulaGraph Engine Examples
 
-Basically the same as Spark Engine, but with `engine="nebula"`.
+Basically the same as Spark Engine, but with `engine="nebula"`, refer to [examples](https://github.com/wey-gu/nebulagraph-ai/blob/main/examples/networkx_engine.ipynb) or [docs](https://github.com/wey-gu/nebulagraph-ai/blob/main/docs/API.md) for more details.
 
 ```diff
 - reader = NebulaReader(engine="spark")
@@ -132,7 +132,7 @@ Basically the same as Spark Engine, but with `engine="nebula"`.
 
 ## How it works
 
-ng_ai is an unified abstraction layer for different engines, the current implementation is based on Spark, NetworkX, DGL and NebulaGraph, but it's easy to extend to other engines like Flink, GraphScope, PyG etc.
+ng_ai is a unified abstraction layer for different engines, the current implementation is based on Spark, NetworkX, DGL, and NebulaGraph, but it's easy to extend to other engines like Flink, GraphScope, PyG, etc.
 
 ```
           ┌───────────────────────────────────────────────────┐

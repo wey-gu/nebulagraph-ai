@@ -1,0 +1,23 @@
+FROM ubuntu:20.04
+
+WORKDIR /usr/local/nebula
+
+# Install dependencies & Download package for Ubuntu 20.04 of nightly build for 2023-03-13 in https://oss-cdn.nebula-graph.com.cn/package/nightly/<yyyy.mm.dd>/nebula-graph-<yyyy.mm.dd>-nightly.ubuntu2004.amd64.deb
+
+RUN apt-get update && \
+    apt-get install -y wget curl && \
+    wget https://oss-cdn.nebula-graph.com.cn/package/nightly/2023.03.13/nebula-graph-2023.03.13-nightly.ubuntu2004.amd64.deb && \
+    dpkg -i nebula-graph-2023.03.13-nightly.ubuntu2004.amd64.deb && \
+    rm *.deb && \
+    apt-get remove -y wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /tmp/* && \
+    mkdir -p logs && \
+    mkdir -p pids
+
+EXPOSE 9669 19669 19670
+
+ENTRYPOINT ["/usr/local/nebula/bin/nebula-graphd", "--flagfile=/usr/local/nebula/etc/nebula-graphd.conf", "--daemonize=false", "--containerized=true"]
+
+# docker build -t weygu/ngai-graphd:2023.03.13 -f Dockerfile-nadi-graphd .

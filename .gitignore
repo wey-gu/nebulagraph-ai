@@ -153,3 +153,7 @@ run
 *.whl
 
 .python_history
+
+# macOS
+
+.DS_Store

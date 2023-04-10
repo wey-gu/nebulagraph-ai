@@ -1,0 +1,19 @@
+FROM bde2020/spark-master:2.4.5-hadoop2.7
+
+RUN apk add --no-cache build-base linux-headers python3-dev libffi-dev py3-pip && \
+    pip3 install --upgrade pip && \
+    pip3 install psutil notebook ng_ai && \
+    apk del build-base linux-headers python3-dev libffi-dev && \
+    rm -rf /var/cache/apk/*
+
+ENV PYSPARK_PYTHON=python3 \
+    PYSPARK_DRIVER_PYTHON=jupyter \
+    PYSPARK_DRIVER_PYTHON_OPTS="notebook --allow-root --ip=0.0.0.0 --port=8888 --no-browser" \
+    JUPYTER_TOKEN=nebula
+
+WORKDIR /root
+
+ENTRYPOINT ["/spark/bin/pyspark", "--driver-class-path", "/root/download/nebula-spark-connector.jar", "--jars", "/root/download/nebula-spark-connector.jar", "--jars", "/root/download/nebula-algo.jar"]
+
+# docker build -t weygu/pyspark-notebook-nebulagraph:2.4.5-hadoop2.7 -f Dockerfile-jupyter .
+# docker run -it --rm -p 8888:8888 weygu/pyspark-notebook-nebulagraph:2.4.5-hadoop2.7

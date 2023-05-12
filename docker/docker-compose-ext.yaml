@@ -2,7 +2,7 @@ services:
   jupyter_networkx:
     labels:
       - "com.vesoft.scope=ngai"
-    image: 'weygu/ngai-jupyter-networkx:0.2.10.1'
+    image: 'weygu/ngai-jupyter-networkx:0.2.10.2'
     container_name: jupyter_networkx
     restart: always
     ports:

@@ -153,6 +153,9 @@ networkx = [
     "gensim==4.1.0",
     "node2vec>=0.4.3",
 ]
+jupyter = [
+    "ipython-ngql>=0.5",
+]
 all = ["ng_ai[spark,networkx]"]
 lint = [
     "flake8>=4.0.1",

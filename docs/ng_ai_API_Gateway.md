@@ -53,7 +53,7 @@ pdm run ng_ai-api
 
 ## UDF build
 
-See https://github.com/wey-gu/nebula/tree/ng_ai_udf
+See https://github.com/wey-gu/nebulagraph-ai/tree/main/udf
 
 ### Build binary `ng_ai.so` file
 

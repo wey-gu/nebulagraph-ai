@@ -320,6 +320,9 @@ class NebulaWriterWithSpark(NebulaWriterBase):
 
         # case switch based on sink
         if self.sink in SPARK_NEBULA_SINKS:
+            kwargs["type"] = (
+                "vertex" if self.sink == "nebulagraph_vertex" else "edge"
+            )
             self._set_options_with_nebula(**kwargs)
         elif self.sink in SPARK_FILE_SINKS:
             self._set_options_with_file(**kwargs)

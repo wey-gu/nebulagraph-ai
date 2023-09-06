@@ -43,7 +43,7 @@ writer.write()
 df_result = df.algo.jaccard()
 
 writer = NebulaWriter(
-    data=df_result, sink="nebulagraph_vertex", config=config, engine="spark"
+    data=df_result, sink="nebulagraph_edge", config=config, engine="spark"
 )
 
 # map column louvain into property cluster_id
@@ -51,7 +51,6 @@ properties = {"similarity": "similarity"}
 
 writer.set_options(
     space="basketballplayer",
-    type="edge",
     edge_type="jaccard_similarity",
     src_id="srcId",
     dst_id="dstId",

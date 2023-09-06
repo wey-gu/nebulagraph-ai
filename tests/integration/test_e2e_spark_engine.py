@@ -107,7 +107,6 @@ def test_label_propagation_spark_engine_writer():
             "MATCH (v:player) RETURN v.label_propagation.cluster_id LIMIT 1"
         )
         print(result)
-    connection_pool.close()
 
     assert result.is_succeeded(), f"ERROR during query NebulaGraph: {result}"
     assert (

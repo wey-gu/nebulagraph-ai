@@ -5,6 +5,19 @@
 </p>
 
 <p align="center">
+
+<a href="https://github.com/vesoft-inc/nebula" target="_blank">
+    <img src="https://img.shields.io/badge/Toolchain-NebulaGraph-blue" alt="for NebulaGraph">
+</a>
+
+<a href="https://hub.docker.com/extensions/weygu/nebulagraph-dd-ext" target="_blank">
+    <img src="https://img.shields.io/badge/Docker-Extension-blue?logo=docker" alt="Docker Extension">
+</a>
+
+<a href="https://github.com/wey-gu/nebulagraph-ai/releases" target="_blank">
+    <img src="https://img.shields.io/github/v/release/wey-gu/nebulagraph-ai?label=Version" alt="GitHub release (latest by date)">
+</a>
+
 <a href="LICENSE" target="_blank">
     <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License">
 </a>
@@ -13,16 +26,24 @@
     <img src="https://badge.fury.io/py/ng_ai.svg" alt="PyPI version">
 </a>
 
-<!-- <a href="https://www.python.org/downloads/release/python-360/" target="_blank">
-    <img src="https://img.shields.io/badge/python-3.6%2B-blue.svg" alt="Python">
-</a> -->
-
 <a href="https://pdm.fming.dev" target="_blank">
     <img src="https://img.shields.io/badge/pdm-managed-blueviolet" alt="pdm-managed">
 </a>
 
 <a href="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml">
   <img src="https://github.com/wey-gu/nebulagraph-ai/actions/workflows/ci.yml/badge.svg" alt="Tests">
+</a>
+
+<a href="https://hub.docker.com/r/weygu/ngai-jupyter-networkx" target="_blank">
+    <img src="https://img.shields.io/docker/v/weygu/ngai-jupyter-networkx?label=nx&logo=docker" alt="Docker Image">
+</a>
+
+<a href="https://hub.docker.com/r/weygu/pyspark-notebook-nebulagraph" target="_blank">
+    <img src="https://img.shields.io/docker/v/weygu/pyspark-notebook-nebulagraph?label=spark&logo=docker" alt="Docker Image">
+</a>
+
+<a href="https://hub.docker.com/r/weygu/ngai-graphd" target="_blank">
+    <img src="https://img.shields.io/docker/v/weygu/ngai-graphd?label=ngai_gateway&logo=docker" alt="Docker Image">
 </a>
 
 <img src="https://img.shields.io/badge/Python-3.9-blue.svg" alt="Python 3.9">

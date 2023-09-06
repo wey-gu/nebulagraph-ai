@@ -63,7 +63,9 @@ def test_nebula_writer_init(spark_df):
 
 
 @patch("ng_ai.nebula_writer.NebulaWriterWithSpark._get_raw_df_writer_with_nebula")
-def test_set_options_with_nebula(mock_get_raw_df_writer, nebula_writer_with_spark_jdf):
+def test_set_options_with_nebula(
+    mock_get_raw_df_writer, nebula_writer_with_spark_jdf
+):
     mock_raw_df_writer = Mock()
     mock_get_raw_df_writer.return_value = mock_raw_df_writer
 

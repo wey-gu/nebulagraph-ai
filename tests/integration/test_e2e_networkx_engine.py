@@ -1,5 +1,3 @@
-import subprocess
-
 from nebula3.Config import Config
 from nebula3.gclient.net import ConnectionPool
 
@@ -29,7 +27,6 @@ def test_networkx_engine_algo():
     """
     Test networkx engine with all algorithms
     """
-    import networkx as nx
 
     from ng_ai import NebulaReader
     from ng_ai.config import NebulaGraphConfig
@@ -108,6 +105,8 @@ def test_networkx_engine_writer():
     connection_pool.close()
 
     assert result.is_succeeded(), f"ERROR during query NebulaGraph: {result}"
-    assert not result.is_empty(), f"louvain not written to NebulaGraph result: {result}"
+    assert (
+        not result.is_empty()
+    ), f"louvain not written to NebulaGraph result: {result}"
 
     print(f"Label propagation result:\n{result}")

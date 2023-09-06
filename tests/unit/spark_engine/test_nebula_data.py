@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 
 from ng_ai.config import NebulaGraphConfig
 from ng_ai.engines import SparkEngine
-from ng_ai.nebula_data import NebulaDataFrameObject, NebulaGraphObject
+from ng_ai.nebula_data import NebulaDataFrameObject
 
 
 @pytest.fixture(scope="session")

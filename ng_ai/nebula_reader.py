@@ -65,7 +65,7 @@ class NebulaReaderWithGraph(NebulaReaderBase):
     def query(self, **kwargs):
         limit = kwargs.get("limit", DEFAULT_NEBULA_QUERY_LIMIT)
         assert type(limit) == int, "limit should be an integer"
-        space = self.config.space
+        # space = self.config.space
         assert "edges" in kwargs, "edges is required"
         edges = kwargs["edges"]
         assert type(edges) == list, "edges should be a list"

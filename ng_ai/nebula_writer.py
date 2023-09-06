@@ -236,16 +236,16 @@ class NebulaWriterWithSpark(NebulaWriterBase):
             assert isinstance(
                 src_id, str
             ), f"src_id should be a string, but got {type(src_id)}"
-            writer.option("srcId", src_id)
-            self._options["srcId"] = src_id
+            writer.option("srcVertexField", src_id)
+            self._options["srcVertexField"] = src_id
 
             # dstId setting, by default, it's dstId, must be a string
             dst_id = kwargs.get("dst_id", "dstId")
             assert isinstance(
                 dst_id, str
             ), f"dst_id should be a string, but got {type(dst_id)}"
-            writer.option("dstId", dst_id)
-            self._options["dstId"] = dst_id
+            writer.option("dstVertexField", dst_id)
+            self._options["dstVertexField"] = dst_id
 
             # srcIdPolicy setting, by default, it's empty, accept hash or uuid, too
             src_id_policy = kwargs.get("src_id_policy", "")
@@ -254,8 +254,8 @@ class NebulaWriterWithSpark(NebulaWriterBase):
                 "hash",
                 "uuid",
             ], f"id_policy valid value: [empty, hash, uuid], got {src_id_policy}"
-            writer.option("srcIdPolicy", src_id_policy)
-            self._options["srcIdPolicy"] = src_id_policy
+            writer.option("srcPolicy", src_id_policy)
+            self._options["srcPolicy"] = src_id_policy
 
             # dstIdPolicy setting, by default, it's empty, accept hash or uuid, too
             dst_id_policy = kwargs.get("dst_id_policy", "")
@@ -264,8 +264,8 @@ class NebulaWriterWithSpark(NebulaWriterBase):
                 "hash",
                 "uuid",
             ], f"id_policy valid value: [empty, hash, uuid], got {dst_id_policy}"
-            writer.option("dstIdPolicy", dst_id_policy)
-            self._options["dstIdPolicy"] = dst_id_policy
+            writer.option("dstPolicy", dst_id_policy)
+            self._options["dstPolicy"] = dst_id_policy
 
             # randkField setting, by default, it's empty, must be a string
             rank_field = kwargs.get("rank_field", "")
@@ -320,6 +320,9 @@ class NebulaWriterWithSpark(NebulaWriterBase):
 
         # case switch based on sink
         if self.sink in SPARK_NEBULA_SINKS:
+            kwargs["type"] = (
+                "vertex" if self.sink == "nebulagraph_vertex" else "edge"
+            )
             self._set_options_with_nebula(**kwargs)
         elif self.sink in SPARK_FILE_SINKS:
             self._set_options_with_file(**kwargs)

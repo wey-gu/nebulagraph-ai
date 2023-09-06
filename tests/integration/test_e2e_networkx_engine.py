@@ -1,5 +1,3 @@
-import subprocess
-
 from nebula3.Config import Config
 from nebula3.gclient.net import ConnectionPool
 
@@ -29,7 +27,6 @@ def test_networkx_engine_algo():
     """
     Test networkx engine with all algorithms
     """
-    import networkx as nx
 
     from ng_ai import NebulaReader
     from ng_ai.config import NebulaGraphConfig

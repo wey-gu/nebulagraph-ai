@@ -107,7 +107,6 @@ def test_label_propagation_spark_engine_writer():
             "MATCH (v:player) RETURN v.label_propagation.cluster_id LIMIT 1"
         )
         print(result)
-    connection_pool.close()
 
     assert result.is_succeeded(), f"ERROR during query NebulaGraph: {result}"
     assert (
@@ -119,3 +118,16 @@ def test_label_propagation_spark_engine_writer():
         .startswith("player")
     ), f"label_propagation value is not correct result: {result}"
     print(f"Label propagation result:\n{result}")
+
+    # edge writer
+    with connection_pool.session_context("root", "nebula") as session:
+        session.execute("USE basketballplayer")
+        result = session.execute(
+            "MATCH ()-[e:jaccard_similarity]->() RETURN e.similarity LIMIT 1"
+        )
+        print(result)
+    connection_pool.close()
+    assert result.is_succeeded(), f"ERROR during query NebulaGraph: {result}"
+    assert (
+        0 < result.column_values("e.similarity")[0].cast() < 1
+    ), f"jaccard_similarity value is not correct result: {result}"

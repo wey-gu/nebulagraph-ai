@@ -4,7 +4,7 @@ services:
       - "com.vesoft.scope=core"
       - "com.vesoft.role=meta"
     container_name: nebulagraph__metad0
-    image: vesoft/nebula-metad:v3.4.0
+    image: vesoft/nebula-metad:v3.6.0
     environment:
       USER: root
     command:
@@ -39,7 +39,7 @@ services:
       - "com.vesoft.scope=core"
       - "com.vesoft.role=storage"
     container_name: nebulagraph__storaged0
-    image: vesoft/nebula-storaged:v3.4.0
+    image: vesoft/nebula-storaged:v3.6.0
     environment:
       USER: root
     command:
@@ -76,7 +76,7 @@ services:
       - "com.vesoft.scope=core"
       - "com.vesoft.role=graph"
     container_name: nebulagraph__graphd
-    image: vesoft/nebula-graphd:v3.4.0
+    image: vesoft/nebula-graphd:v3.6.0
     environment:
       USER: root
     command:

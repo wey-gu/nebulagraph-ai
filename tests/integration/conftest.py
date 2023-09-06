@@ -55,6 +55,21 @@ def prepare_data():
         "docker run --rm --network setup_ngai-net vesoft/nebula-console:v3"
         ' -addr graphd -port 9669 -u root -p nebula -e " '
         "USE basketballplayer; "
+        "CREATE EDGE IF NOT EXISTS jaccard_similarity "
+        '(similarity double);" ',
+        shell=True,
+        check=True,
+        capture_output=True,
+    )
+    sleep(4)
+    assert (
+        b"ERROR" not in result.stdout
+    ), f"ERROR during create edge: {result.stdout.decode('utf-8')}"
+
+    result = subprocess.run(
+        "docker run --rm --network setup_ngai-net vesoft/nebula-console:v3"
+        ' -addr graphd -port 9669 -u root -p nebula -e " '
+        "USE basketballplayer; "
         'SHOW STATS;" ',
         shell=True,
         check=True,
@@ -100,5 +115,20 @@ def prepare_data():
     assert (
         b"ERROR" not in result.stdout
     ), f"ERROR during create tag: {result.stdout.decode('utf-8')}"
+
+    # check the schema existence with DESC EDGE jaccard_similarity:
+    result = subprocess.run(
+        "docker run --rm --network setup_ngai-net vesoft/nebula-console:v3"
+        ' -addr graphd -port 9669 -u root -p nebula -e " '
+        "USE basketballplayer; "
+        'DESC EDGE jaccard_similarity;" ',
+        shell=True,
+        check=True,
+        capture_output=True,
+    )
+    print(f"DESC EDGE jaccard_similarity:\n{result.stdout.decode('utf-8')}")
+    assert (
+        b"ERROR" not in result.stdout
+    ), f"ERROR during create edge: {result.stdout.decode('utf-8')}"
 
     print("Setup data done...")

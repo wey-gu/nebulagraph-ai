@@ -37,3 +37,30 @@ writer.write()
     --jars /root/download/nebula-algo.jar \
     /root/run/writer.py
 """
+
+# edge writer
+
+df_result = df.algo.jaccard()
+
+writer = NebulaWriter(
+    data=df_result, sink="nebulagraph_vertex", config=config, engine="spark"
+)
+
+# map column louvain into property cluster_id
+properties = {"similarity": "similarity"}
+
+writer.set_options(
+    space="basketballplayer",
+    type="edge",
+    edge_type="jaccard_similarity",
+    src_id="srcId",
+    dst_id="dstId",
+    src_id_policy="",
+    dst_id_policy="",
+    properties=properties,
+    batch_size=256,
+    write_mode="insert",
+)
+
+# write back to NebulaGraph
+writer.write()

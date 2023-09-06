@@ -37,9 +37,7 @@ def parallel(algo_name):
         # get algo_context
         algo_context = data.get("algo_context")
         assert algo_context is not None, "algo_context should not be None"
-        assert (
-            algo_context.get("space") is not None
-        ), "space should not be None"  # noqa
+        assert algo_context.get("space") is not None, "space should not be None"  # noqa
     except Exception as e:
         print(e)
         return {"error": f"algo context parsing failed: {e}"}

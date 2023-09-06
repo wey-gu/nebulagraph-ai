@@ -90,9 +90,7 @@ class SparkEngine(BaseEngine):
 
         # scala:
         # import "com.vesoft.nebula.algorithm.config.SparkConfig"
-        java_import(
-            self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig"
-        )
+        java_import(self.spark._jvm, "com.vesoft.nebula.algorithm.config.SparkConfig")
         return java_import
 
     def import_scala_class(self, class_name):

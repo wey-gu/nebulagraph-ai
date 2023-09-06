@@ -108,8 +108,6 @@ def test_networkx_engine_writer():
     connection_pool.close()
 
     assert result.is_succeeded(), f"ERROR during query NebulaGraph: {result}"
-    assert (
-        not result.is_empty()
-    ), f"louvain not written to NebulaGraph result: {result}"
+    assert not result.is_empty(), f"louvain not written to NebulaGraph result: {result}"
 
     print(f"Label propagation result:\n{result}")

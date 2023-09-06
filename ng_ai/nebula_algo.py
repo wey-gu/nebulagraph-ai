@@ -320,9 +320,7 @@ class NebulaDataFrameAlgorithm:
         return result
 
     @algo
-    def strong_connected_components(
-        self, max_iter: int = 10, weighted: bool = False
-    ):
+    def strong_connected_components(self, max_iter: int = 10, weighted: bool = False):
         engine, spark, jspark, encode_vid = self.get_spark_engine_context(
             "CcConfig", "StronglyConnectedComponentsAlgo"
         )
@@ -572,9 +570,7 @@ class NebulaGraphAlgorithm:
         g = self.ngraph.get_nx_graph()
         if root is None:
             root = next(iter(g.nodes()))
-        return self.engine.nx.dfs_edges(
-            g, source=root, depth_limit=max_depth, **kwargs
-        )
+        return self.engine.nx.dfs_edges(g, source=root, depth_limit=max_depth, **kwargs)
 
     @algo
     def node2vec(
@@ -622,9 +618,7 @@ class NebulaGraphAlgorithm:
         single_ug = self.engine.nx.Graph()
         for u, v in g.edges():
             single_ug.add_edge(u, v)
-        return self.engine.nx.jaccard_coefficient(
-            single_ug, ebunch=ebunch, **kwargs
-        )
+        return self.engine.nx.jaccard_coefficient(single_ug, ebunch=ebunch, **kwargs)
 
     @algo
     def connected_components(self, **kwargs):
@@ -673,9 +667,7 @@ class NebulaGraphAlgorithm:
         return self.engine.nx.triangles(single_ug, **kwargs)
 
     @algo
-    def closeness_centrality(
-        self, u=None, distance=None, wf_improved=True, **kwargs
-    ):
+    def closeness_centrality(self, u=None, distance=None, wf_improved=True, **kwargs):
         """
         doc: https://networkx.org/documentation/networkx-2.6.2/reference/algorithms/generated/networkx.algorithms.centrality.closeness_centrality.html
         u: node, optional (default = None), If specified, return only the value for the node u.

@@ -361,7 +361,7 @@ class NebulaDataFrameAlgorithm:
 
 class NebulaGraphAlgorithm:
     """
-    Networkx to run algorithm
+    Networkx or DGL to run algorithm
     """
 
     def __init__(self, ng_obj: NebulaGraphObjectImpl):
@@ -718,3 +718,102 @@ class NebulaGraphAlgorithm:
         return self.engine.nx.closeness_centrality(
             g, u=u, distance=distance, wf_improved=wf_improved, **kwargs
         )
+
+    @algo
+    def gnn_link_prediction(
+        self,
+        edge_types: list,
+        model_name: str = "graphsage",
+        hidden_features: int = 64,
+        out_features: int = 32,
+        num_layers: int = 2,
+        dropout: float = 0.5,
+        aggregator_type: str = "mean",
+        batch_size: int = 1024,
+        num_epochs: int = 100,
+        learning_rate: float = 0.001,
+        device: str = "cpu",
+        negative_sampling_ratio: float = 1.0,
+    ):
+        self.check_engine()
+        
+        from ng_ai.engines import DGLEngine
+        from ng_ai.nebula_gnn import Constraint, LinkPredictionModel
+        
+        if self.ngraph.gnn_engine is None:
+            self.ngraph.gnn_engine = DGLEngine()
+        dgl = self.ngraph.gnn_engine.dgl
+        torch = self.ngraph.gnn_engine.torch
+
+        assert model_name.lower() in Constraint.LINK_PREDICTION_MODELS, (
+            f"model_name should be one of {Constraint.LINK_PREDICTION_MODELS},"
+            f"got {model_name}"
+        )
+
+        # Convert NebulaGraph to DGL graph
+        g = self.ngraph.get_nx_graph()
+        dgl_g = dgl.from_networkx(g, edge_attrs=['weight'])
+
+        # Prepare features (assuming node IDs as features for simplicity)
+        in_feats = dgl_g.number_of_nodes()
+        features = torch.arange(in_feats).float().view(-1, 1).to(device)
+
+        # Create model
+        model = LinkPredictionModel(self.ngraph.gnn_engine, model_name).create_model(
+            in_feats=in_feats,
+            hidden_features=hidden_features,
+            out_features=out_features,
+            rel_names=edge_types,
+            num_layers=num_layers,
+            dropout=dropout,
+            aggregator_type=aggregator_type,
+            device=device,
+        )
+
+        # Prepare positive and negative edges for training
+        pos_edges = dgl_g.edges()
+        neg_edges = dgl.sampling.global_uniform_negative_sampling(
+            dgl_g, 
+            num_samples=int(pos_edges[0].shape[0] * negative_sampling_ratio)
+        )
+
+        # Create DataLoader
+        edge_dataset = dgl.data.EdgeDataset(
+            (torch.cat([pos_edges[0], neg_edges[0]]), torch.cat([pos_edges[1], neg_edges[1]])),
+            torch.cat([torch.ones(pos_edges[0].shape[0]), torch.zeros(neg_edges[0].shape[0])])
+        )
+        dataloader = dgl.dataloading.EdgeDataLoader(
+            dgl_g, edge_dataset, batch_size=batch_size, shuffle=True,
+            negative_sampler=dgl.dataloading.negative_sampler.Uniform(1)
+        )
+
+        # Define loss function
+        def compute_loss(pos_score, neg_score):
+            scores = torch.cat([pos_score, neg_score])
+            labels = torch.cat([torch.ones(pos_score.shape[0]), torch.zeros(neg_score.shape[0])]).to(pos_score.device)
+            return torch.nn.functional.binary_cross_entropy_with_logits(scores, labels)
+
+        # Training loop
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        model.train()
+        for epoch in range(num_epochs):
+            total_loss = 0
+            for input_nodes, pos_graph, neg_graph, blocks in dataloader:
+                blocks = [b.to(device) for b in blocks]
+                pos_graph = pos_graph.to(device)
+                neg_graph = neg_graph.to(device)
+                input_features = features[input_nodes].to(device)
+
+                pos_score = model(blocks, input_features)
+                neg_score = model(blocks, input_features)
+
+                loss = compute_loss(pos_score, neg_score)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                total_loss += loss.item()
+
+            print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {total_loss / len(dataloader):.4f}")
+
+        return model
+

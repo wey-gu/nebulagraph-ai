@@ -11,6 +11,11 @@ class NebulaGraphObject:
         self.engine = engine
         # if engine is nebula, self._graph is a networkx graph object
         # if engine is spark, self._graph is a spark graph object
+        if "gnn_engine" in kwargs:
+            self.gnn_engine = kwargs["gnn_engine"]
+        else:
+            self.gnn_engine = None
+        self.gnn_graph = None
         self._graph = raw_graph
         # let's keep unified interface as NebulaDataFrameObject
         self.data = self._graph

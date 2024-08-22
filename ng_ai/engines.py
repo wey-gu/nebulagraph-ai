@@ -155,3 +155,39 @@ class NebulaEngine(BaseEngine):
         if self.config is None:
             return
         self.nx_config = self._nx_config(**self.config.__dict__)
+
+
+class DGLEngine(BaseEngine):
+    def __init__(self, config=None):
+        self.type = "dgl"
+        self.config = config
+
+        # let's make all dgl related import here
+        import dgl
+        import dgl.nn as dglnn
+        import dgl.function as fn
+        import torch.nn as nn
+        import torch.nn.functional as F
+        import torch
+
+        self.dgl = dgl
+        self.dglnn = dglnn
+        self.fn = fn
+        self.nn = nn
+        self.F = F
+        self.torch = torch
+
+        self.dgl_config = None
+        self.parse_config()
+
+    def __str__(self):
+        return (
+            f"DGLEngine(DGL): {self.config}, "
+            f"dgl version: {self.dgl.__version__}"
+        )
+
+    def parse_config(self):
+        """parse and validate config"""
+        if self.config is None:
+            return
+        self.dgl_config = self._dgl_config(**self.config.__dict__)

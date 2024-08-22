@@ -111,7 +111,7 @@ filter_files = true
 
 [project]
 name = "ng_ai"
-version = "0.2.10.2"
+version = "0.2.10.3"
 description = "NebulaGraph AI Suite"
 authors = [
     {name = "Wey Gu", email = "weyl.gu@gmail.com"},
@@ -146,15 +146,16 @@ build-backend = "pdm.pep517.api"
 spark = ["pyspark>=3.2.3"]
 # gensim 4.2.0 doesn't work on m1 mac, 4.3.x requires python 3.8+, so we use 4.1.0
 networkx = [
-    "ng_nx>=0.1.8",
-    "pandas>=1.3.5",
-    "numpy>=1.21.6",
-    "scipy>=1.7.3",
+    "ng_nx>=0.2.3",
+    #"pandas>=1.3.5",
+    #"numpy>=1.21.6",
+    #"scipy>=1.7.3",
     "gensim==4.1.0",
     "node2vec>=0.4.3",
+    "python-louvain>=0.16",
 ]
 jupyter = [
-    "ipython-ngql>=0.5",
+    "jupyter_nebulagraph>=0.14.3",
 ]
 all = ["ng_ai[spark,networkx]"]
 lint = [
